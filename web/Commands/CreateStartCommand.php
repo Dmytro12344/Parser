@@ -27,15 +27,13 @@ class CreateStartCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        /*$guzzle = new GuzzleWrap();
-        $td = $guzzle->getContent('https://www.paginiaurii.ro/firmy/-/q_activit%C4%83%C5%A3i+de+asisten%C5%A3%C4%83+medical%C4%83+specializat%C4%83+-+cod+caen++8622/1/');*/
-
-
+        $guzzle = new GuzzleWrap();
+        $content = $guzzle->getContent('https://www.paginiaurii.ro/firmy/-/q_activit%C4%83%C5%A3i+de+asisten%C5%A3%C4%83+medical%C4%83+specializat%C4%83+-+cod+caen++8622/1/');
         $pars = new WrapPars();
-        $td = $pars->getPars();
+
 
         $output->writeln([
-            $td
+            $pars->getPars($content)
         ]);
     }
 }
