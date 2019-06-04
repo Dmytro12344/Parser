@@ -28,12 +28,16 @@ class CreateStartCommand extends Command
     {
 
         $guzzle = new GuzzleWrap();
-        $content = $guzzle->getContent('https://www.paginiaurii.ro/firmy/-/q_activit%C4%83%C5%A3i+de+asisten%C5%A3%C4%83+medical%C4%83+specializat%C4%83+-+cod+caen++8622/1/');
         $pars = new WrapPars();
 
 
-        $output->writeln([
-            $pars->getPars($content)
-        ]);
+        for($i = 1; $i <= 500; $i++) {
+            $content = $guzzle->getContent("https://www.paginiaurii.ro/firmy/-/q_activit%C4%83%C5%A3i+de+asisten%C5%A3%C4%83+medical%C4%83+specializat%C4%83+-+cod+caen++8622/{$i}/");
+
+
+            $output->writeln([
+                $pars->getPars($content)
+            ]);
+        }
     }
 }
