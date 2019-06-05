@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4d1322d-83bd-4c73-ad32-7b1f79477ed6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/symfony2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parsed.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file.txt" beforeDir="false" afterPath="$PROJECT_DIR$/file.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/Commands/CreateStartCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/Commands/CreateStartCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsed.csv" beforeDir="false" afterPath="$PROJECT_DIR$/parsed.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/Wraps/WrapPars.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/Wraps/WrapPars.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -39,38 +35,26 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/web/Commands/CreateStartCommand.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="258">
-              <caret line="25" selection-start-line="25" selection-end-line="25" />
-              <folding>
-                <element signature="e#28#74#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/web/Wraps/WrapPars.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="94" column="140" selection-start-line="94" selection-start-column="140" selection-end-line="94" selection-end-column="140" />
+            <state relative-caret-position="319">
+              <caret line="141" column="89" selection-start-line="141" selection-start-column="77" selection-end-line="141" selection-end-column="89" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/parsed.csv">
-          <provider selected="true" editor-type-id="csv-table-editor">
-            <state showInfoPanel="false" fixedHeaders="false" rowLines="4">
-              <column index="0" width="100" />
+          <provider selected="true" editor-type-id="csv-text-editor" />
+          <provider editor-type-id="csv-table-editor">
+            <state showInfoPanel="false" fixedHeaders="false" rowLines="5">
+              <column index="0" width="181" />
               <column index="1" width="100" />
               <column index="2" width="100" />
               <column index="3" width="100" />
               <column index="4" width="100" />
             </state>
           </provider>
-          <provider editor-type-id="csv-text-editor" />
         </entry>
       </file>
     </leaf>
@@ -82,6 +66,11 @@
       <find>ELLMAN MED SRL</find>
       <find>LAUNER FARM SRL</find>
       <find>723175415</find>
+      <find>728130905</find>
+      <find>752173749</find>
+      <find>237641157</find>
+      <find>213102890</find>
+      <find>213221544</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -134,28 +123,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="parser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="parser" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="parser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="parser" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="parser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="parser" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="Wraps" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
+      <pane id="ProjectPane" />
       <pane id="Scope">
         <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
@@ -213,17 +181,19 @@
       <workItem from="1559628489407" duration="24250000" />
       <workItem from="1559679673453" duration="10912000" />
       <workItem from="1559737753436" duration="5388000" />
+      <workItem from="1559762655658" duration="113000" />
+      <workItem from="1559762793558" duration="8507000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="71640000" />
+    <option name="totallyTimeSpent" value="80260000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="25" width="1368" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2060606" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14166667" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -237,7 +207,7 @@
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.44462278" />
-      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" weight="0.32905295" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" weight="0.32744783" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -288,12 +258,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/file.csv">
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-      </provider>
-      <provider selected="true" editor-type-id="csv-text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/file.csv" />
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -317,8 +282,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/web/Commands/CreateStartCommand.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
+        <state relative-caret-position="93">
+          <caret line="14" column="5" lean-forward="true" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
           <folding>
             <element signature="e#28#74#0#PHP" expanded="true" />
           </folding>
@@ -327,23 +292,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/web/Wraps/WrapPars.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="94" column="140" selection-start-line="94" selection-start-column="140" selection-end-line="94" selection-end-column="140" />
+        <state relative-caret-position="319">
+          <caret line="141" column="89" selection-start-line="141" selection-start-column="77" selection-end-line="141" selection-end-column="89" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/parsed.csv">
-      <provider editor-type-id="text-editor" />
-      <provider selected="true" editor-type-id="csv-table-editor">
-        <state showInfoPanel="false" fixedHeaders="false" rowLines="4">
-          <column index="0" width="100" />
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="1889">
+          <caret line="236" column="68" lean-forward="true" selection-start-line="236" selection-start-column="68" selection-end-line="236" selection-end-column="68" />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="csv-text-editor" />
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="false" fixedHeaders="false" rowLines="5">
+          <column index="0" width="181" />
           <column index="1" width="100" />
           <column index="2" width="100" />
           <column index="3" width="100" />
           <column index="4" width="100" />
         </state>
       </provider>
-      <provider editor-type-id="csv-text-editor" />
     </entry>
   </component>
 </project>
