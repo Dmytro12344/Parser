@@ -8,20 +8,24 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class WrapPars
 {
-    protected $leftRight = "}##{";
-
-
     public function getPars() : void
     {
         $guzzle = new GuzzleWrap();
         $linksMas = $this->globalMas();
         $countLinks = count($linksMas);
+        $str =[];
+
+        $fp = fopen('parsed.csv', 'w');
+
+
 
         for($i = 1; $i <= $countLinks; $i++) {
             for ($j = 1; $j <= 500; $j++) {
+                $crawler = new Crawler($guzzle->getContent($this->linkPars($linksMas[$i], $j)));
                 for ($k = 0; $k < 20; $k++) {
-                    $crawler = new Crawler($guzzle->getContent($this->linkPars($linksMas[$i], $j)));
                     $filter = $crawler->filter('ul>li>.result')->eq($k);
+
+
                     if($filter->filterXPath("//*[@itemprop='name']")->count() <= 0)
                     {
                         continue 3;
@@ -87,21 +91,20 @@ class WrapPars
                         continue;
                     }
 
-                    //correct format for file.txt
-                    $str = trim($companyName) . $this->leftRight . trim($companyAddress) . $this->leftRight
-                        . trim($companyCity) . $this->leftRight . $companyPostalCod . $this->leftRight . $companyTelephone . "\n";
 
-                    $fp = fopen("file.txt", "a");
-                    fwrite($fp, $str);
-                    fclose($fp);
+                    $str[] = [trim($companyName), trim($companyAddress), trim($companyCity), trim($companyPostalCod),trim($companyTelephone)];
 
-                    echo $str ;
+                    foreach($str as $value)
+                    {
+                        fputcsv($fp, $value);
+                    }
+                    var_dump($str);
 
                 }
                 echo "\n";
             }
         }
-
+        fclose($fp);
     }
 
 

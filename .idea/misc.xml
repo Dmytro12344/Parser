@@ -4,6 +4,7 @@
     <option name="languageLevel" value="ES6" />
   </component>
   <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/../parser/web/Commands/Start.php" />
+    <file url="file://$PROJECT_DIR$/file.csv" />
+    <file url="file://$PROJECT_DIR$/parser.csv" />
   </component>
 </project>

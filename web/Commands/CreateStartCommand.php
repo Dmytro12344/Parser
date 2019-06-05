@@ -26,19 +26,11 @@ class CreateStartCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $pars = new WrapPars();
 
-
-            $pars = new WrapPars();
-
-
-
-
-
-
-                $output->writeln([
-                    $pars->getPars(),
-                    //$this->linkPars($linksMas[$i], $j)
-                ]);
+        $output->writeln([
+            $pars->getPars()
+        ]);
     }
 
 
