@@ -5,8 +5,9 @@ namespace Commands;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Wraps\GuzzleWrap;
 use Wraps\WrapPars;
+
+
 
 class CreateStartCommand extends Command
 {
@@ -15,7 +16,6 @@ class CreateStartCommand extends Command
     {
         parent::__construct();
     }
-
 
     protected function configure()
     {
@@ -29,7 +29,7 @@ class CreateStartCommand extends Command
         $pars = new WrapPars();
 
         $output->writeln([
-            $pars->getPars()
+           $pars->getPars()
         ]);
     }
 

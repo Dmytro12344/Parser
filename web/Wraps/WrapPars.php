@@ -1,120 +1,94 @@
 <?php
 
-
 namespace Wraps;
 
-use \Exception;
+use GuzzleHttp\Psr7\Request;
 use Symfony\Component\DomCrawler\Crawler;
+use GuzzleHttp\Client;
+use GuzzleHttp\Pool;
+
 
 class WrapPars
 {
+
     public function getPars() : void
     {
         $guzzle = new GuzzleWrap();
-        $linksMas = $this->globalMas();
-        $countLinks = count($linksMas);
-        $str =[];
+        $link = 'https://www.zivefirmy.cz/auto-moto-vozidla-autoskla-motocykly-automobily_o897?pg=';
 
-        $fp = fopen('parsed.csv', 'w');
+        $fp = fopen('parsed.csv', 'w+');
 
-
-
-        for($i = 1; $i <= $countLinks; $i++) {
-            for ($j = 1; $j <= 500; $j++) {
-                $crawler = new Crawler($guzzle->getContent($this->linkPars($linksMas[$i], $j)));
-                for ($k = 0; $k < 20; $k++) {
-                    $filter = $crawler->filter('ul>li>.result')->eq($k);
+        for($i = 1; $i <= 509; $i++)
+        {
+            $crawler = new Crawler($guzzle->getContent($link . $i));
 
 
-                    if($filter->filterXPath("//*[@itemprop='name']")->count() <= 0)
-                    {
-                        continue 3;
-                    }
-                    $companyName = $filter->filterXPath("//*[@itemprop='name']")->text();
+                $pool = new Pool($guzzle->Client(), $this->getProfile(40, $crawler), [
+                    'concurrency' => 10,
+                    'fulfilled' => function ($response, $index) use (&$fp){
 
+                        $crawler = new Crawler($response->getBody()->getContents());
 
+                        $name = $crawler->filterXPath("//h1[@itemprop='name']")->text();
 
-
-                    //check to correct telephone
-                    if ($filter->filterXPath("//*[@itemprop='telephone']")->count() > 0) {
-                        $companyTelephone = substr(preg_replace("/[^0-9]+/", "", $filter->filterXPath("//*[@itemprop='telephone']")->text()), 1);
-
-                    } else {
-                        continue;
-                    }
-
-                    if ($filter->filterXPath("//*[@itemprop='address']")->count() > 0) {
-                        $fullAddress = $filter->filterXPath("//*[@itemprop='address']")->text();
-
-
-                        //check to correct POSTAL COD
-                        if (!empty(strpos($fullAddress, 'Cod Postal'))) {
-                            $postal = explode(" ", strrchr($fullAddress, 'Postal'));
-                            if (isset($postal[1]) && substr($postal[1], -1) === ',') {
-                                $result = rtrim($postal[1], ',');
-                                $companyPostalCod = $result;
-                            } else {
-                                $companyPostalCod = '';
-                            }
+                        if($crawler->filterXPath("//span[@itemprop='telephone']")->count() > 0)
+                        {
+                            $phone = $crawler->filterXPath("//span[@itemprop='telephone']")->text();
                         } else {
-                            $companyPostalCod = '';
+                            $phone = '';
                         }
 
-                        //check to correct CIty
-
-                        if (!is_numeric(strrchr($fullAddress, ' '))) {
-                            $companyCity = strrchr($fullAddress, ' ');
+                        if($crawler->filterXPath("//span[@itemprop='streetAddress']")->count() > 0)
+                        {
+                            $address = $crawler->filterXPath("//span[@itemprop='streetAddress']")->text();
                         } else {
-                            $result = $this->before(strrchr($fullAddress, ', Cod Postal '), $fullAddress);
-                            $companyCity = strrchr($result, ' ');
+                            $address = '';
                         }
 
-                        //check to correct Address
-                        if (!ctype_upper(strrchr($fullAddress, ' '))) {
-                            if (!empty(strrchr($fullAddress, 'Jud. '))) {
-                                $companyAddress = $this->before(strrchr($fullAddress, ', Jud. '), $fullAddress);
-                            } elseif (!empty(strrchr($fullAddress, 'Cod Postal '))) {
-                                $companyAddress = $this->before(strrchr($fullAddress, ', Cod Postal '), $fullAddress);
-                            } else {
-                                $companyAddress = $this->before(strrchr($fullAddress, ', '), $fullAddress);
-                            }
-                            if (!empty(strrchr($companyAddress, 'Cod Postal '))) {
-                                $companyAddress = $this->before(strrchr($companyAddress, ', Cod '), $companyAddress);
-                            }
-                            if (!empty(strrchr($companyAddress, $companyCity))) {
-                                $companyAddress = $companyAddress = $this->before(strrchr($companyAddress, ", $companyCity"), $companyAddress);
-                            }
+                        if($crawler->filterXPath("//span[@itemprop='addressLocality']")->count() > 0)
+                        {
+                            $city = $crawler->filterXPath("//span[@itemprop='addressLocality']")->text();
                         } else {
-                            continue;
+                            $city = $crawler->filter('.wrapper > .media > .media-body')->text();
                         }
-                    } else {
-                        continue;
-                    }
 
+                        if($crawler->filterXPath("//span[@itemprop='postalCode']")->count() > 0)
+                        {
+                            $postal = $crawler->filterXPath("//span[@itemprop='postalCode']")->text();
+                        } else {
+                            $postal = '';
+                        }
 
-                    $str[] = [trim($companyName), trim($companyAddress), trim($companyCity), trim($companyPostalCod),trim($companyTelephone)];
+                        $str = [trim($name), trim($city), trim($address), trim($postal), trim($phone)];
+                        fputcsv($fp, $str);
+                        //var_dump($str);
+                        var_dump($index);
 
-                    foreach($str as $value)
-                    {
-                        fputcsv($fp, $value);
-                    }
-                    var_dump($str);
+                    },
+                    'rejected' => function ($reason, $index) {
 
-                }
-                echo "\n";
-            }
+                    },
+                ]);
+
+                $pool->promise()->wait();
         }
         fclose($fp);
     }
 
+    public function getProfile($total, $crawler) : \Generator
+    {
+        $uri = 'https://www.zivefirmy.cz';
+
+        for($k = 0; $k < $total; $k++) {
+            $filter = $crawler->filter('.company-item >.block')->eq($k);
+            $new_link = $uri . $filter->filter('.title > a')->attr('href');
+            yield new Request('GET', $new_link);
+        }
+    }
 
 
 
-
-
-
-
-
+/*
     public function globalMas() : array
     {
         return file('list.txt');
@@ -143,4 +117,5 @@ class WrapPars
         }
         return '';
     }
+*/
 }
