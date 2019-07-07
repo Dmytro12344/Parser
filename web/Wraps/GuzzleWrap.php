@@ -4,43 +4,88 @@
 namespace Wraps;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 
 class GuzzleWrap
 {
 
+    /**
+     * @return Client
+     * @description: returns new Client (connection to site with proxy)
+     */
     public function Client() : Client
     {
         $proxy = file('proxy.csv');
-        $rand = mt_rand(1, 249);
+        $rand = mt_rand(1, 247);
         $proxyString = 'http://marekroziecki:pLnWYmR3@' . trim($proxy[$rand]) . ':60099';
 
         var_dump($proxyString);
 
         return new Client([
             'timeout' => 3.0,
-            'cookie' => true,
-            'proxy' => [
-                'https' => $proxyString,
-            ],
+            'cookie' => false,
+            'proxy' => $proxyString,
         ]);
     }
 
+    /**
+     * @return Client
+     * @description: returns new Client (connection to site without proxy)
+     */
+    public function noProxyClient() : Client
+    {
+        return new Client([
+            'timeout' => 3.0,
+            'cookie' => false,
+        ]);
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     * @description: Finds and gets content from site (else will return error message)
+     */
     public function getContent(string $url) : string
     {
-        try{
+        $i = 0;
 
-        $responses = $this->Client()
-            ->request('GET', $url, ['http_errors' => false])
-            ->getBody()
-            ->getContents();
-        } catch (RequestException $e)
+        while($i != 20)
         {
-            return $this->getContent($url);
+            try
+            {
+                /**
+                 * @description: returns content from site (with proxy connection)
+                 */
+                return $this->Client()
+                    ->request('GET', $url)
+                    ->getBody()
+                    ->getContents();
+            }
+            catch(RequestException | GuzzleException $e)
+            {
+                $i++;
+            }
         }
 
-        return $responses;
+        try
+        {
+            /**
+             * @description: return content from site (without proxy)
+             */
+            return $this->noProxyClient()
+                ->request('GET', $url)
+                ->getBody()
+                ->getContents();
+        } catch(GuzzleException $e)
+        {
+            /**
+             * @description: When any connection is failed returns Error Message
+             */
+            var_dump($e->getMessage());
+            return $e->getMessage();
+        }
+
     }
 
 }

@@ -4,7 +4,6 @@ namespace Wraps;
 
 use GuzzleHttp\Psr7\Request;
 use Symfony\Component\DomCrawler\Crawler;
-use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
 
 
@@ -14,17 +13,14 @@ class WrapPars
     public function getPars(): void
     {
         $guzzle = new GuzzleWrap();
-
         $link = 'https://www.zivefirmy.cz/auto-moto-vozidla-autoskla-motocykly-automobily_o897?pg=';
-
         $fp = fopen('parsed.csv', 'w+');
 
         for ($i = 1; $i <= 509; $i++) {
             $crawler = new Crawler($guzzle->getContent($link . $i));
 
-
             $pool = new Pool($guzzle->Client(), $this->getProfile(40, $crawler), [
-                'concurrency' => 10,
+                'concurrency' => 5,
                 'fulfilled' => function ($response, $index) use (&$fp) {
 
                     $crawler = new Crawler($response->getBody()->getContents());
@@ -57,22 +53,25 @@ class WrapPars
 
                     $str = [trim($name), trim($city), trim($address), trim($postal), trim($phone)];
                     fputcsv($fp, $str);
-                    //var_dump($str);
                     var_dump($index);
 
                 },
                 'rejected' => function ($reason, $index) {
-
+                    var_dump("$reason $index");
                 },
             ]);
 
             $pool->promise()->wait();
-
         }
         fclose($fp);
     }
 
-    public function getProfile($total, $crawler): \Generator
+    /**
+     * @param $total
+     * @param $crawler
+     * @return \Generator
+     */
+    public function getProfile($total, $crawler) : \Generator
     {
         $uri = 'https://www.zivefirmy.cz';
 
