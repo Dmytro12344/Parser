@@ -1,11 +1,12 @@
 <?php
 
-namespace Commands;
+namespace Commands\Process;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
+
 
 
 class StartProcessCommand extends Command
@@ -25,16 +26,6 @@ class StartProcessCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $process = new Process('php application.php app:start-download');
-        $process2 = new Process('php application.php app:start-download-second-stream');
-
-        $process2->start();
-        $process->start();
-
-        while ($process->isRunning() && $process2->isRunning()) {
-
-        }
-
 
     }
 

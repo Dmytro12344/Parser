@@ -9,15 +9,28 @@ use GuzzleHttp\Pool;
 
 class WrapPars
 {
+    protected $link = 'https://www.zivefirmy.cz/auto-moto-vozidla-autoskla-motocykly-automobily_o897?pg=';
+    protected $links = [];
+
+    public function getLinks() : void
+    {
+        $guzzle = new GuzzleWrap();
+
+        for($i = 1 ; $i <= 509; $i++){
+            $crawler = new Crawler($guzzle->getContent($this->link . $i));
+            $this->getProfile(40, $crawler);
+            var_dump($this->links);
+        }
+    }
+
 
     public function getPars(): void
     {
         $guzzle = new GuzzleWrap();
-        $link = 'https://www.zivefirmy.cz/auto-moto-vozidla-autoskla-motocykly-automobily_o897?pg=';
-        $fp = fopen('parsed.csv', 'w+');
+        /*$fp = fopen('parsed.csv', 'w+');
 
         for ($i = 1; $i <= 509; $i++) {
-            $crawler = new Crawler($guzzle->getContent($link . $i));
+            $crawler = new Crawler($guzzle->getContent($this->link . $i));
 
             $pool = new Pool($guzzle->Client(), $this->getProfile(40, $crawler), [
                 'concurrency' => 5,
@@ -57,28 +70,28 @@ class WrapPars
 
                 },
                 'rejected' => function ($reason, $index) {
-                    var_dump("$reason $index");
+                    var_dump("$reason $index REJECTED");
                 },
             ]);
 
             $pool->promise()->wait();
         }
-        fclose($fp);
+        fclose($fp); */
     }
 
     /**
      * @param $total
      * @param $crawler
-     * @return \Generator
      */
-    public function getProfile($total, $crawler) : \Generator
+    public function getProfile($total, $crawler)
     {
         $uri = 'https://www.zivefirmy.cz';
 
         for ($k = 0; $k < $total; $k++) {
             $filter = $crawler->filter('.company-item >.block')->eq($k);
-            $new_link = $uri . $filter->filter('.title > a')->attr('href');
-            yield new Request('GET', $new_link);
+            //$new_link = $uri . $filter->filter('.title > a')->attr('href');
+            $this->links[] = $uri . $filter->filter('.title > a')->attr('href');
+            //yield new Request('GET', $new_link);
         }
     }
 }

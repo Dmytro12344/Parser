@@ -1,15 +1,16 @@
 <?php
 
 
-namespace Commands;
+namespace Commands\Process;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Wraps\SecondStream;
+use Wraps\Process\MainContent;
 
-class SecondStreamCommand extends Command
+
+class ProfileProcessCommand extends Command
 {
     public function __construct()
     {
@@ -18,17 +19,19 @@ class SecondStreamCommand extends Command
 
     protected function configure()
     {
-        $this->setName('app:start-download-second-stream')
+        $this->setName('app:download-profile-content')
             ->setDescription('Starts download')
             ->setHelp('This command allow you start the script');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $pars = new SecondStream();
+        $pars = new MainContent();
+
 
         $output->writeln([
-            $pars->getPars()
+           $pars->getProfileContent()
         ]);
+
     }
 }
