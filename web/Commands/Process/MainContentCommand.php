@@ -1,15 +1,17 @@
 <?php
 
 
-namespace Commands;
+namespace Commands\Process;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
-use Wraps\SecondStream;
 
-class SecondStreamCommand extends Command
+use  Wraps\Process\MainContent;
+
+class MainContentCommand extends Command
 {
     public function __construct()
     {
@@ -18,17 +20,19 @@ class SecondStreamCommand extends Command
 
     protected function configure()
     {
-        $this->setName('app:start-download-second-stream')
+        $this->setName('app:download-main-content')
             ->setDescription('Starts download')
-            ->setHelp('This command allow you start the script');
+            ->setHelp('This command allow you start the script')
+            ->addOption('url', 'u', InputOption::VALUE_REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $pars = new SecondStream();
+        $pars = new MainContent();
 
         $output->writeln([
-            $pars->getPars()
+            $pars->setLinks($input->getOption('url'))
         ]);
+
     }
 }

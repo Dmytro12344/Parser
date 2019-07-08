@@ -29,6 +29,7 @@ class CreateStartCommand extends Command
         $pars = new WrapPars();
 
         $output->writeln([
+           $pars->getLinks(),
            $pars->getPars()
         ]);
     }
