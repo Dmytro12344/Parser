@@ -36,7 +36,7 @@ class MainContentCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
+     * Starts the flow of processes that collect information
      */
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
@@ -44,10 +44,13 @@ class MainContentCommand extends Command
         $guzzle = new GuzzleWrap();
         $crawler = new Crawler($guzzle->getContent($input->getOption('url')));
 
+        /** Creates new Process (max of processes is total pages ) */
         foreach ($this->getProfile(40, $crawler) as $url) {
             $process = new Process("php application.php app:download-profile-content --url=$url");
             $process->start();
             $activeProcess[] = $process;
+
+            /** Cleaning memory of useless processes */
             $this->processControl($activeProcess,$crawler);
         }
     }
@@ -55,7 +58,7 @@ class MainContentCommand extends Command
     /**
      * @param $process
      * @param $crawler
-     *
+     * Method that cleans memory from useless processes
      */
     public function processControl($process, $crawler) : void
     {
@@ -75,6 +78,7 @@ class MainContentCommand extends Command
      * @param $total
      * @param $crawler
      * @return array
+     * Method that collect all links from current page (in current process)
      */
     public function getProfile($total, $crawler) : array
     {
