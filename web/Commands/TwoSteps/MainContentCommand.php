@@ -48,6 +48,8 @@ class MainContentCommand extends Command
         foreach ($this->getProfile(40, $crawler) as $url) {
             $process = new Process("php application.php app:download-profile-content --url=$url");
             $process->start();
+
+            /** total processes */
             $activeProcess[] = $process;
 
             /** Cleaning memory of useless processes */

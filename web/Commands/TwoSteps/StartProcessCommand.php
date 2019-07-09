@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Input\InputOption;
 
 class StartProcessCommand extends Command
 {
@@ -20,12 +21,15 @@ class StartProcessCommand extends Command
 
     /**
      * Command config
+     * php application.php app:start-commands -t (int)number -p (int)number
      */
     protected function configure() : void
     {
         $this->setName('app:start-commands')
             ->setDescription('Starts other commands')
-            ->setHelp('This command allow you start necessary scripts');
+            ->setHelp('This command allow you start necessary scripts')
+            ->addOption('total', 't', InputOption::VALUE_REQUIRED)
+            ->addOption('pagination', 'p', InputOption::VALUE_REQUIRED);
     }
 
     /**
@@ -37,23 +41,26 @@ class StartProcessCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $link = 'https://www.zivefirmy.cz/auto-moto-vozidla-autoskla-motocykly-automobily_o897?pg=';
+        /** receives category */
+        $links = file('list.txt', FILE_SKIP_EMPTY_LINES);
         $activeProcess = [];
 
-        /** total pages from pagination */
-        for($i = 1 ; $i <= 509; $i++)
-        {
-            $url = $link . $i;
-            $process = new Process("php application.php app:download-main-content -u $url");
-            $process->start();
-            $activeProcess[] = $process;
+        foreach($links as $position => $link) {
 
-            /**  Shows witch process is running and which page refers to this process*/
-            var_dump($process->getPid() . " now $i page is processed");
+            /** total pages from pagination */
+            for ($i = 1; $i <= $input->getOption('total'); $i++) {
+                $url = $link . $i;
+                $process = new Process("php application.php app:download-main-content -u $url");
+                $process->start();
+                $activeProcess[] = $process;
 
-            /** Cleaning memory of useless processes */
-            $this->processControl($activeProcess);
+                /**  Shows witch process is running and which page refers to this process*/
+                var_dump($process->getPid() . " now $i page is processed. File number $position");
 
+                /** Cleaning memory of useless processes */
+                $this->processControl($activeProcess);
+
+            }
         }
     }
 
@@ -61,9 +68,9 @@ class StartProcessCommand extends Command
      * @param $processes
      * Method that cleans memory from useless processes
      */
-    public function processControl($processes)
+    public function processControl($processes) : void
     {
-        if(count($processes) >= 3){
+        if(count($processes) >= 10){
             while(count($processes)){
                 foreach($processes as $key => $runningProcess){
                     if(!$runningProcess->isRunning()){
