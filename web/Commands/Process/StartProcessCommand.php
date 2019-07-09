@@ -12,8 +12,6 @@ use Symfony\Component\Process\Process;
 class StartProcessCommand extends Command
 {
 
-    public $fp;
-
     public function __construct()
     {
         parent::__construct();
@@ -51,7 +49,6 @@ class StartProcessCommand extends Command
                 }
             }
         }
-        fclose($this->fp);
     }
 
 }
