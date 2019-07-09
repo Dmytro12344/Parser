@@ -5,9 +5,16 @@ namespace Wraps\Process;
 use Symfony\Component\DomCrawler\Crawler;
 use Wraps\GuzzleWrap;
 use Symfony\Component\Process\Process;
+use Commands\Process\StartProcessCommand as SC;
 
 class MainContent
 {
+    public $fp;
+    public function __construct()
+    {
+        $this->fp = fopen('parsed.csv', 'w+');
+
+    }
 
     /**
      * @param $paginationURL
@@ -22,8 +29,10 @@ class MainContent
             $process = new Process("php application.php app:download-profile-content --url=$url");
             $process->start();
             $activeProcess[] = $process;
+
+
             if (count($activeProcess) >= 3) {
-                while (count($activeProcess) >= 3) {
+                while (count($activeProcess)) {
                     foreach ($activeProcess as $key => $runningProcess) {
                         if (!$runningProcess->isRunning()) {
                             unset($activeProcess[$key]);
@@ -35,13 +44,10 @@ class MainContent
         }
     }
 
-    public function getProfileContent($url): void
+    public function getProfileContent($url)
     {
         $guzzle = new GuzzleWrap();
-
-        $fp = fopen('parsed.csv', 'w+');
         $crawler = new Crawler($guzzle->getContent($url));
-
 
         $name = $crawler->filterXPath("//h1[@itemprop='name']")->text();
 
@@ -69,11 +75,10 @@ class MainContent
             $postal = '';
         }
 
-        $str = [trim($name), trim($city), trim($address), trim($postal), trim($phone)];
-        fputcsv($fp, $str);
-        var_dump($str);
+        $str = trim($name). ', '. trim($city) . ', ' . trim($address) . ', ' . trim($postal) . ', ' . trim($phone) . "\n";
 
-        fclose($fp);
+        file_put_contents('parsed.csv', $str, FILE_APPEND | LOCK_EX);
+        
     }
 
     /**

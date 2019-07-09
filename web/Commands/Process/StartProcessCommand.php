@@ -2,6 +2,7 @@
 
 namespace Commands\Process;
 
+use function GuzzleHttp\Psr7\str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,6 +11,8 @@ use Symfony\Component\Process\Process;
 
 class StartProcessCommand extends Command
 {
+
+    public $fp;
 
     public function __construct()
     {
@@ -31,23 +34,24 @@ class StartProcessCommand extends Command
         for($i = 1 ; $i <= 509; $i++)
         {
             $url = $link . $i;
-            $process = new Process("php application.php app:download-main-content --url=$url");
+            $process = new Process("php application.php app:download-main-content -u $url");
             $process->start();
-
             $activeProcess[] = $process;
+
+            var_dump($process->getPid());
+
             if(count($activeProcess) >= 3){
                 while(count($activeProcess)){
                     foreach($activeProcess as $key => $runningProcess){
                         if(!$runningProcess->isRunning()){
                             unset($activeProcess[$key]);
-                            var_dump(count($activeProcess));
                         }
                     }
                     sleep(1);
                 }
             }
         }
-
+        fclose($this->fp);
     }
 
 }

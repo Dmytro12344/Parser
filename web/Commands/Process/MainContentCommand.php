@@ -18,7 +18,7 @@ class MainContentCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure() : void
     {
         $this->setName('app:download-main-content')
             ->setDescription('Starts download')
@@ -26,7 +26,7 @@ class MainContentCommand extends Command
             ->addOption('url', 'u', InputOption::VALUE_REQUIRED);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output) : void
     {
         $pars = new MainContent();
 

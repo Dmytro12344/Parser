@@ -24,7 +24,6 @@ class ProfileProcessCommand extends Command
             ->setDescription('Starts download')
             ->setHelp('This command allow you start the script')
             ->addOption('url', 'u' , InputOption::VALUE_REQUIRED);
-        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
