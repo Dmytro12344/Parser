@@ -17,15 +17,6 @@ use Wraps\GuzzleWrap;
 class ProfileProcessCommand extends Command
 {
     /**
-     * ProfileProcessCommand constructor.
-     * Don't using
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Command configuration
      */
     protected function configure() : void
@@ -47,54 +38,17 @@ class ProfileProcessCommand extends Command
         $guzzle = new GuzzleWrap();
         $crawler = new Crawler($guzzle->getContent($input->getOption('url')));
 
-        /**
-         * Set company name
-         */
+        /** Set parameters */
         $name = $this->filterContent($crawler, '.container-fluid > h1');
+        $phone = $this->XPathContent($crawler, 'a', 'dotted', 'class');
+        $address = $this->XPathContent($crawler, 'span', 'streetAddress');
+        $city =  $this->XPathContent($crawler, 'span', 'addressLocality');
+        $postal = $this->XPathContent($crawler, 'span', 'postalCode');
 
-        /**
-         * Set Phone number
-         * If content is'nt empty write ur condition after ?
-         * If content is empty write ur condition after :
-         */
-        $phone = $this->isXPathContent($crawler, 'a', 'dotted', 'class')
-            ? $this->XPathContent($crawler, 'a', 'dotted', 'class')
-            : '';
-
-        /**
-         * Set Address
-         * If content is'nt empty write ur condition after ?
-         * If content is empty write ur condition after :
-         */
-        $address = $this->isXPathContent($crawler, 'span', 'streetAddress')
-            ? $this->XPathContent($crawler, 'span', 'streetAddress')
-            : '';
-
-        /**
-         * Set City
-         * If content is'nt empty write ur condition after ?
-         * If content is empty write ur condition after :
-         */
-        $city =  $this->isXPathContent($crawler, 'span', 'addressLocality')
-            ? $this->XPathContent($crawler, 'span', 'addressLocality')
-            : '';
-
-        /**
-         * Set Postal (ZIP) Code
-         * If content is'nt empty write ur condition after ?
-         * If content is empty write ur condition after :
-         */
-        $postal = $this->isXPathContent($crawler, 'span', 'postalCode')
-            ? $this->XPathContent($crawler, 'span', 'postalCode')
-            : '';
-
-        /**
-         * Write data to file
-         */
-        $stream = fopen('parsed.csv', 'a+');
         $str = [trim($name), trim($city), trim($address), trim($postal), trim($phone)];
-        fputcsv($stream, $str);
-        fclose($stream);
+
+        /** Write data to file */
+        $this->writeToFile($str);
     }
 
     /**
@@ -105,9 +59,24 @@ class ProfileProcessCommand extends Command
      * @return string
      * returns Text from needed HTML tag attribute
      */
+    public function XPathFilter($crawler, $tag, $attrName, $attr) : string
+    {
+        return $crawler->filterXPath("//". $tag ."[@" . $attr ."='" . $attrName . "']");
+    }
+
+    /**
+     * @param $crawler
+     * @param $tag
+     * @param $attrName
+     * @param $attr
+     * @return string
+     */
     public function XPathContent($crawler, $tag, $attrName, $attr = 'itemprop') : string
     {
-        return $crawler->filterXPath("//". $tag ."[@" . $attr ."='" . $attrName . "']")->text();
+        if($this->XPathFilter($crawler, $tag, $attrName, $attr)->count() > 0){
+            return $this->XPathFilter($crawler, $tag, $attrName, $attr)->text();
+        }
+        return '';
     }
 
     /**
@@ -122,15 +91,13 @@ class ProfileProcessCommand extends Command
     }
 
     /**
-     * @param $crawler
-     * @param $tag
-     * @param $attrName
-     * @param string $attr
-     * @return bool
-     * returns bool if HTML tag attribute is not empty and FALSE if empty
+     * @param array $arr
      */
-    public function isXPathContent($crawler, $tag, $attrName, $attr = 'itemprop') : bool
+    public function writeToFile(array $arr) : void
     {
-        return ($crawler->filterXPath("//". $tag ."[@" . $attr ."='" . $attrName . "']")->count() > 0) ? true : false;
+        $stream = fopen('parsed.csv', 'a+');
+        fputcsv($stream, $arr);
+        fclose($stream);
     }
+
 }

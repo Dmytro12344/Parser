@@ -14,15 +14,6 @@ use Wraps\GuzzleWrap;
 class MainContentCommand extends Command
 {
     /**
-     * MainContentCommand constructor.
-     * Don't using
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Command configuration
      * php application.php app:download-main-content -u string_url
      */
@@ -65,8 +56,8 @@ class MainContentCommand extends Command
      */
     protected function processControl($process, $crawler) : void
     {
-        if (count($process) >= count($this->getProfile($crawler))) {
-            while (count($process)) {
+        if (count($process) === count($this->getProfile($crawler))) {
+            while (count($process) === count($this->getProfile($crawler))) {
                 foreach ($process as $key => $runningProcess) {
                     if (!$runningProcess->isRunning()) {
                         unset($process[$key]);

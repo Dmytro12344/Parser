@@ -65,8 +65,7 @@ class StartProcessCommand extends Command
                     /** Cleaning memory of useless processes */
                     $this->processControl($activeProcess);
                 }catch (ProcessFailedException $e){
-                    var_dump("Process $activeProcess[$i] is " . $e->getMessage() . '. He was deleted.');
-                    unset($activeProcess[$i]);
+
                 }
 
             }
@@ -79,8 +78,8 @@ class StartProcessCommand extends Command
      */
     public function processControl($processes) : void
     {
-        if(count($processes) >= 10){
-            while(count($processes)){
+        if(count($processes) === 10){
+            while(count($processes) === 10){
                 foreach($processes as $key => $runningProcess){
                     if(!$runningProcess->isRunning()){
                         unset($processes[$key]);
