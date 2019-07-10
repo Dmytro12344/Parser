@@ -1,12 +1,14 @@
 <?php
 
-namespace Commands\Process;
+namespace Commands\TwoSteps;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+
 
 class StartProcessCommand extends Command
 {
@@ -28,8 +30,8 @@ class StartProcessCommand extends Command
         $this->setName('app:start-commands')
             ->setDescription('Starts other commands')
             ->setHelp('This command allow you start necessary scripts')
-            ->addOption('total', 't', InputOption::VALUE_REQUIRED)
-            ->addOption('pagination', 'p', InputOption::VALUE_REQUIRED);
+            ->addOption('total', 't', InputOption::VALUE_REQUIRED, 'Total pages on site')
+            ->addOption('links', 'l', InputOption::VALUE_REQUIRED, 'Total link in pagination');
     }
 
     /**
@@ -44,21 +46,28 @@ class StartProcessCommand extends Command
         /** receives category */
         $links = file('list.txt', FILE_SKIP_EMPTY_LINES);
         $activeProcess = [];
+        $paginationLinks = (int)$input->getOption('links');
 
         foreach($links as $position => $link) {
 
             /** total pages from pagination */
             for ($i = 1; $i <= $input->getOption('total'); $i++) {
-                $url = $link . $i;
-                $process = new Process("php application.php app:download-main-content -u $url");
-                $process->start();
-                $activeProcess[] = $process;
+                $url = $link;
 
-                /**  Shows witch process is running and which page refers to this process*/
-                var_dump($process->getPid() . " now $i page is processed. File number $position");
+                try {
+                    $process = new Process("php application.php app:download-main-content -u $url -l $paginationLinks");
+                    $process->mustRun();
+                    $activeProcess[] = $process;
 
-                /** Cleaning memory of useless processes */
-                $this->processControl($activeProcess);
+                    /**  Shows witch process is running and which page refers to this process*/
+                    var_dump($process->getPid() . " now $i page is processed. File number $position");
+
+                    /** Cleaning memory of useless processes */
+                    $this->processControl($activeProcess);
+                }catch (ProcessFailedException $e){
+                    var_dump("Process $activeProcess[$i] is " . $e->getMessage() . '. He was deleted.');
+                    unset($activeProcess[$i]);
+                }
 
             }
         }

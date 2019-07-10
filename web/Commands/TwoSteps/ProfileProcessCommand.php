@@ -1,6 +1,6 @@
 <?php
 
-namespace Commands\Process;
+namespace Commands\TwoSteps;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -50,15 +50,15 @@ class ProfileProcessCommand extends Command
         /**
          * Set company name
          */
-        $name = $this->XPathContent($crawler, 'h1', 'name');
+        $name = $this->filterContent($crawler, '.container-fluid > h1');
 
         /**
          * Set Phone number
          * If content is'nt empty write ur condition after ?
          * If content is empty write ur condition after :
          */
-        $phone = $this->isXPathContent($crawler, 'span', 'telephone')
-            ? $this->XPathContent($crawler, 'span', 'telephone')
+        $phone = $this->isXPathContent($crawler, 'a', 'dotted', 'class')
+            ? $this->XPathContent($crawler, 'a', 'dotted', 'class')
             : '';
 
         /**
