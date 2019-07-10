@@ -55,26 +55,15 @@ class ProfileProcessCommand extends Command
      * @param $crawler
      * @param $tag
      * @param $attrName
-     * @param string $attr
-     * @return string
-     * returns Text from needed HTML tag attribute
-     */
-    public function XPathFilter($crawler, $tag, $attrName, $attr) : string
-    {
-        return $crawler->filterXPath("//". $tag ."[@" . $attr ."='" . $attrName . "']");
-    }
-
-    /**
-     * @param $crawler
-     * @param $tag
-     * @param $attrName
      * @param $attr
      * @return string
      */
-    public function XPathContent($crawler, $tag, $attrName, $attr = 'itemprop') : string
+    public function XPathContent(Crawler $crawler, string $tag, string $attrName, string $attr = 'itemprop') : string
     {
-        if($this->XPathFilter($crawler, $tag, $attrName, $attr)->count() > 0){
-            return $this->XPathFilter($crawler, $tag, $attrName, $attr)->text();
+        $filter = $crawler->filterXPath("//". $tag ."[@" . $attr ."='" . $attrName . "']");
+
+        if($filter->count() > 0){
+            return $filter->text();
         }
         return '';
     }
@@ -85,7 +74,7 @@ class ProfileProcessCommand extends Command
      * @return string
      * returns filtered content
      */
-    public function filterContent($crawler, string $filter) : string
+    public function filterContent(Crawler $crawler, string $filter) : string
     {
         return $crawler->filter($filter)->text();
     }

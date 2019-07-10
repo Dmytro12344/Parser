@@ -13,15 +13,6 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class StartProcessCommand extends Command
 {
     /**
-     * StartProcessCommand constructor.
-     * Don't using
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Command config
      * php application.php app:start-commands -t (int)number -p (int)number
      */

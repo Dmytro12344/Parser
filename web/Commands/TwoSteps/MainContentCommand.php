@@ -36,7 +36,6 @@ class MainContentCommand extends Command
         $guzzle = new GuzzleWrap();
         $crawler = new Crawler($guzzle->getContent($input->getOption('url')));
 
-
         /** Creates new Process (max of processes is total pages ) */
         foreach ($this->getProfile($crawler) as $url) {
             $process = new Process("php application.php app:download-profile-content --url=$url");
