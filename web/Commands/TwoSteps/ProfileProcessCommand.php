@@ -40,10 +40,10 @@ class ProfileProcessCommand extends Command
 
         /** Set parameters */
         $name = $this->filterContent($crawler, '.container-fluid > h1');
-        $phone = $this->XPathContent($crawler, 'a', 'dotted', 'class');
-        $address = $this->XPathContent($crawler, 'span', 'streetAddress');
-        $city =  $this->XPathContent($crawler, 'span', 'addressLocality');
-        $postal = $this->XPathContent($crawler, 'span', 'postalCode');
+        $phone = $this->XPathContent($crawler, "//a[@class='dotted']");
+        $address = $this->XPathContent($crawler, 'span');
+        $city =  $this->XPathContent($crawler, 'span');
+        $postal = $this->XPathContent($crawler, 'span');
 
         $str = [trim($name), trim($city), trim($address), trim($postal), trim($phone)];
 
@@ -52,15 +52,13 @@ class ProfileProcessCommand extends Command
     }
 
     /**
-     * @param $crawler
-     * @param $tag
-     * @param $attrName
-     * @param $attr
+     * @param Crawler $crawler
+     * @param string $xPath
      * @return string
      */
-    public function XPathContent(Crawler $crawler, string $tag, string $attrName, string $attr = 'itemprop') : string
+    public function XPathContent(Crawler $crawler, string $xPath) : string
     {
-        $filter = $crawler->filterXPath("//". $tag ."[@" . $attr ."='" . $attrName . "']");
+        $filter = $crawler->filterXPath($xPath);
 
         if($filter->count() > 0){
             return $filter->text();

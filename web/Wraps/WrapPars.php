@@ -27,7 +27,7 @@ class WrapPars
     public function getPars(): void
     {
         $guzzle = new GuzzleWrap();
-        /*$fp = fopen('parsed.csv', 'w+');
+        $fp = fopen('parsed.csv', 'w+');
 
         for ($i = 1; $i <= 509; $i++) {
             $crawler = new Crawler($guzzle->getContent($this->link . $i));
@@ -76,13 +76,12 @@ class WrapPars
 
             $pool->promise()->wait();
         }
-        fclose($fp); */
+        fclose($fp);
     }
 
-    /**
-     * @param $total
-     * @param $crawler
-     */
+
+
+    /*
     public function getProfile($total, $crawler)
     {
         $uri = 'https://www.zivefirmy.cz';
@@ -93,7 +92,7 @@ class WrapPars
             $this->links[] = $uri . $filter->filter('.title > a')->attr('href');
             //yield new Request('GET', $new_link);
         }
-    }
+    } */
 }
 
 
@@ -104,12 +103,7 @@ class WrapPars
         return file('list.txt');
     }
 
-    public function linkPars($link, $torn) : string
-    {
-        trim($link);
-        $link = substr_replace($link,"$torn/",strlen($link)-3);
-        return $link;
-    }
+
 
     public function after ($after, $string) : string
     {

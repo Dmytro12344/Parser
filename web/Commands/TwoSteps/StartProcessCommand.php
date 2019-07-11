@@ -47,7 +47,7 @@ class StartProcessCommand extends Command
 
                 try {
                     $process = new Process("php application.php app:download-main-content -u $url -l $paginationLinks");
-                    $process->mustRun();
+                    $process->start();
                     $activeProcess[] = $process;
 
                     /**  Shows witch process is running and which page refers to this process*/
@@ -69,8 +69,8 @@ class StartProcessCommand extends Command
      */
     public function processControl($processes) : void
     {
-        if(count($processes) === 10){
-            while(count($processes) === 10){
+        if(count($processes) >= 4){
+            while(count($processes) >= 4){
                 foreach($processes as $key => $runningProcess){
                     if(!$runningProcess->isRunning()){
                         unset($processes[$key]);
