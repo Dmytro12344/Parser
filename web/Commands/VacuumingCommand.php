@@ -12,13 +12,7 @@ use Wraps\GuzzleWrap;
 
 class VacuumingCommand extends Command
 {
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    protected function configure()
+    protected function configure() : void
     {
         $this->setName('app:vacuuming')
             ->setDescription('Starts download')

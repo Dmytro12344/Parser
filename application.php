@@ -15,5 +15,10 @@ $application->add(new Commands\TwoSteps\StartProcessCommand());
 $application->add(new Commands\TwoSteps\MainContentCommand());
 $application->add(new Commands\TwoSteps\ProfileProcessCommand());
 
+/** www.zlatestranky.cz */
+$application->add(new Commands\firmyCZ\FirmyCZParserCommand());
+
+
+
 $application->run();
 

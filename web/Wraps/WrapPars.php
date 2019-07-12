@@ -2,7 +2,6 @@
 
 namespace Wraps;
 
-use GuzzleHttp\Psr7\Request;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Pool;
 

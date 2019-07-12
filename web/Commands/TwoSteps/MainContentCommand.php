@@ -76,7 +76,6 @@ class MainContentCommand extends Command
      */
     protected function getProfile($crawler) : array
     {
-        //$uri = 'https://www.zivefirmy.cz';
         $url = [];
         $filter = $crawler->filter('.company-card__name > a');
 
