@@ -15,8 +15,14 @@ $application->add(new Commands\TwoSteps\StartProcessCommand());
 $application->add(new Commands\TwoSteps\MainContentCommand());
 $application->add(new Commands\TwoSteps\ProfileProcessCommand());
 
+
+/** CZ */
+
 /** www.zlatestranky.cz */
-$application->add(new Commands\firmyCZ\FirmyCZParserCommand());
+$application->add(new Commands\CZ\Zlatestranky\ZlatestrankyParserCommand());
+
+/** www.obchodnirejstrikfirem.cz */
+$application->add(new Commands\CZ\Obchodnirejstrikfirem\ObchodnirejstrikfiremParserCommand());
 
 
 
