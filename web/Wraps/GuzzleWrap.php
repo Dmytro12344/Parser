@@ -37,7 +37,7 @@ class GuzzleWrap
     {
         return new Client([
             'timeout' => 3.0,
-            'cookie' => false,
+            'cookie' => true,
         ]);
     }
 

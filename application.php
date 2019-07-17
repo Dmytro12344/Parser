@@ -23,6 +23,14 @@ $application->add(new Commands\CZ\Zlatestranky\ZlatestrankyParserCommand());
 
 /** www.obchodnirejstrikfirem.cz */
 $application->add(new Commands\CZ\Obchodnirejstrikfirem\ObchodnirejstrikfiremParserCommand());
+$application->add(new Commands\CZ\Obchodnirejstrikfirem\ObchodnirejstrikfiremProfileCommand());
+
+/** obchody.sluzby.cz */
+$application->add(new Commands\CZ\Obchody\ObchodyParserCommand());
+
+/**  */
+$application->add(new Commands\CZ\Najisto\NajistoPatserCommand());
+
 
 
 

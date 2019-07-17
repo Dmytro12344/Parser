@@ -35,6 +35,7 @@ class ZlatestrankyParserCommand extends Command
         $links = file('web/Commands/CZ/Zlatestranky/list.txt', FILE_SKIP_EMPTY_LINES);
 
         foreach($links as $key => $link){
+
             $crawler = new Crawler($guzzle->getContent($link . '1'));
             $totalPage = $this->getTotalPages($crawler);
 
@@ -44,6 +45,7 @@ class ZlatestrankyParserCommand extends Command
 
                         $crawler = new Crawler($response->getBody()->getContents());
                         $totalRecords = $this->getTotalRecords($crawler);
+                        var_dump($totalRecords);
                         for($i = 0; $i <= $totalRecords -1; $i++){
 
                             $result = array_values([
@@ -181,7 +183,7 @@ class ZlatestrankyParserCommand extends Command
      */
     public function getTotalRecords(Crawler $crawler) : int
     {
-        return $crawler->filter('.list-results-twocol')->children()->count();
+        return $crawler->filter('.list-results')->children()->count();
     }
 
     /**

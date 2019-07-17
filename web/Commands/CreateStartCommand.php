@@ -66,8 +66,8 @@ class CreateStartCommand extends Command
      */
     public function processControl($processes) : void
     {
-        if(count($processes) >= 120){
-            while(count($processes) >= 120){
+        if(count($processes) >= 20){
+            while(count($processes) >= 20){
                 foreach($processes as $key => $runningProcess){
                     if(!$runningProcess->isRunning()){
                         unset($processes[$key]);

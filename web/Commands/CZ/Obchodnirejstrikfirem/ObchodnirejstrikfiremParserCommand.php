@@ -7,6 +7,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
@@ -35,53 +36,49 @@ class ObchodnirejstrikfiremParserCommand extends Command
         $links = file('web/Commands/CZ/Obchodnirejstrikfirem/list.txt', FILE_SKIP_EMPTY_LINES);
 
         foreach($links as $key => $link){
-            $crawler = new Crawler($guzzle->getContent($link . '1/'));
-            $totalPage = $this->getTotalPages($crawler);
+            $crawlerHelper = new Crawler($guzzle->getContent(trim($link).'1/'));
 
-                $pool = new Pool($guzzle->Client(), $this->getContent($totalPage, $link), [
+            for($i = 1; $i<= $this->getTotalPages($crawlerHelper); $i++) {
+                $crawler = new Crawler($guzzle->getContent(trim($link) . $i . '/'));
+                $pool = new Pool($guzzle->Client(), $this->getProfileLink($crawler, $this->getTotalRecords($crawler)), [
                     'concurrency' => 5,
-                    'fulfilled' => function ($response, $index) use ($guzzle) {
-                        $crawlerProfile = new Crawler($response->getBody()->getContents());
-                        $totalRecords = $this->getTotalRecords($crawlerProfile);
+                    'fulfilled' =>
+                        function ($response, $index){
+                            $crawler = new Crawler($response->getBody()->getContents());
 
-                        $profilePool = new Pool($guzzle->Client(), $this->getProfileContent($crawlerProfile, $totalRecords), [
-                                'concurrency' => 5,
-                                'fulfilled' => function ($response, $index) {
-                                    $crawler = new Crawler($response->getBody()->getContents());
-                                    //var_dump($index);
-                                    $this->getCompanyName($crawler);
-
-                                },
-                                'rejected' => function ($reason, $index) {
-                                    var_dump("REJECTED $index");
-                                }
+                            $result =  array_values([
+                                'name' => $this->getCompanyName($crawler),
+                                'phone' => $this->getPhone($crawler),
+                                'address' => $this->getAddress($crawler),
+                                'city' => $this->getCity($crawler),
+                                'postal' => $this->getPostal($crawler),
                             ]);
-                            $promise = $profilePool->promise();
-                            $promise->wait();
 
+                            $this->writeToFile([$result]);
 
-
-
-                    },
-                    'rejected' => function ($reason, $index) use ($output) {
-                        $output->writeln([
-                            "$reason -> $index REJECTED"
-                        ]);
-                    },
+                            var_dump($result);
+                        },
+                    'rejected' =>
+                        function ($reason, $index) use ($output) {
+                            $output->writeln([
+                                "$reason -> $index REJECTED"
+                            ]);
+                        },
                 ]);
                 $promise = $pool->promise();
                 $promise->wait();
+            }
+
+
+
+
         }
     }
 
-    /**
-     * @param $crawler
-     * @return string
-     */
-    protected function getCompanyName(Crawler $crawler)
+
+    protected function getCompanyName(Crawler $crawler) : string
     {
-        var_dump($crawler->filter('h1')->text());
-         //return $crawler->filter('.levystred2 > .stred2 > h1')->text();
+        return $crawler->filter('#stred2 > h1')->text();
     }
 
     /**
@@ -90,21 +87,28 @@ class ObchodnirejstrikfiremParserCommand extends Command
      * @return string
      * Returns company phone
      */
-    public function getPhone(Crawler $crawler, $i) : string
+    public function getPhone(Crawler $crawler) : string
     {
-        return $crawler->filter('.btn-toolbar > .btn-group > button')->eq($i)->text();
+        $filter =  $crawler->filterXPath("//td[@style='text-align:justify;padding:10px 0 10px 0']")->eq(0)->text();
+        $number = explode(':', $filter);
+
+        if(isset($number[1])){
+            $number[1] = str_replace('Fax', '',trim($number[1]));
+            $number[1] = str_replace('Tel2', '',trim($number[1]));
+            return $number[1];
+        }
+
+        return '';
     }
 
     /**
      * @param Crawler $crawler
-     * @param int $k
      * @return string
      * Returns company Full Address (street, postal, city)
      */
-    protected function getFullAddress(Crawler $crawler, int $k) : string
+    protected function getFullAddress(Crawler $crawler) : string
     {
-        $filter =  $crawler->filter('.icon-list')->eq($k);
-        return $filter->filter('li')->eq(0)->text();
+        return trim($crawler->filterXPath("//td[@style='text-align:justify;padding-top:10px']")->html());
     }
 
     /**
@@ -113,10 +117,14 @@ class ObchodnirejstrikfiremParserCommand extends Command
      * @return string
      * Returns company address
      */
-    protected function getAddress(Crawler $crawler, int $k) : string
+    protected function getAddress(Crawler $crawler) : string
     {
-        $fullAddress = explode(",", $this->getFullAddress($crawler, $k));
-        return $fullAddress[0];
+        $fullAddress = explode('<br>', $this->getFullAddress($crawler));
+        if(isset($fullAddress[3])) {
+            $fullAddress[3] = str_replace(',', '', trim($fullAddress[3]));
+            return $fullAddress[3];
+        }
+        return '';
     }
 
     /**
@@ -125,16 +133,15 @@ class ObchodnirejstrikfiremParserCommand extends Command
      * @return string
      * Returns company Cod Postal
      */
-    protected function getPostal(Crawler $crawler, int $k) : string
+    protected function getPostal(Crawler $crawler) : string
     {
-        $fullAddress = explode(',', $this->getFullAddress($crawler, $k));
-        $postal = explode(" ", $fullAddress[1]);
-
-        if(is_numeric($postal[1]) && is_numeric($postal[2])){
-            return $postal[1] . $postal[2];
+        $fullAddress = explode('<br>', $this->getFullAddress($crawler));
+        if(isset($fullAddress[4])) {
+            $fullAddress[4] = str_replace(',', '', trim($fullAddress[4]));
+            return $fullAddress[4];
         }
 
-        return " ";
+        return '';
     }
 
     /**
@@ -143,28 +150,14 @@ class ObchodnirejstrikfiremParserCommand extends Command
      * @return string
      * Returns company City
      */
-    protected function getCity(Crawler $crawler, int $k)
+    protected function getCity(Crawler $crawler)
     {
-        $fullAddress = explode(",", $this->getFullAddress($crawler, $k));
-        $city =  explode(" ", $fullAddress[1]);
-        $currentCity = '';
-
-        if(!is_numeric($city[1]) && !is_numeric($city[2])){
-            $j = 1;
-
-            while($j !== count($city)){
-                $currentCity .= @$city[$j] . ' ';
-                $j++;
-            }
-
-            return $currentCity;
+        $fullAddress = explode('<br>', $this->getFullAddress($crawler));
+        if(isset($fullAddress[2])) {
+            $fullAddress[2] = str_replace(',', '', trim($fullAddress[2]));
+            return $fullAddress[2];
         }
-
-        for($i = 3; $i <= count($city); $i++){
-            $currentCity .= @$city[$i] . ' ';
-        }
-
-       return $currentCity;
+        return '';
     }
 
     /**
@@ -185,42 +178,24 @@ class ObchodnirejstrikfiremParserCommand extends Command
      * @return int
      * Returns total records from page
      */
-    public function getTotalRecords(Crawler $crawler)
+    public function getTotalRecords(Crawler $crawler) : int
     {
         return $crawler->filterXPath("//div[@style='margin-bottom:10px']")->count();
     }
 
-    /**
-     * @param $total
-     * @param $url
-     * @return \Generator
-     * Generate new Request to get information from page
-     */
-    public function getContent(int $total, string $url) : \Generator
-    {
-        for ($k = 1; $k <= $total; $k++) {
-            $uri = $url . $k . '/';
-            yield new Request('GET', $uri);
-        }
-    }
 
-    protected function getProfileLink(Crawler $crawler, $k) : string
-    {
-        $filter = $crawler->filterXPath("//td[@valign='bottom']")->eq($k);
-        $urn = $filter->filter('a')->attr('href');
-        return $urn;
-    }
-
-    protected function getProfileContent(Crawler $crawler, int $total) : \Generator
+    protected function getProfileLink(Crawler $crawler, int $total) : \Generator
     {
         $url = 'http://www.obchodnirejstrikfirem.cz';
 
-        for ($k = 1; $k <= $total; $k++) {
-            $urn = $this->getProfileLink($crawler, $k);
-            $uri = $url . $urn ;
-            yield new Request('GET', $uri);
+        for($i = 0; $i < $total; $i++) {
+
+            $filter = $crawler->filterXPath("//td[@valign='bottom']")->eq($i);
+            $urn = $filter->filter('a')->attr('href');
+            yield new Request('GET', $url . $urn);
         }
     }
+
 
     /**
      * @param array $arr
