@@ -34,8 +34,8 @@ class NajistoPatserCommand extends Command
     {
         $guzzle = new GuzzleWrap();
 
-        for($j = 1; $j <= 62; $j++) {
-            $link = "https://najisto.centrum.cz/?p=$j&what=v%25C3%25BDroba%2520%25C5%25A1perk%25C5%25AF&fp=1";
+        for($j = 1; $j <= 82; $j++) {
+            $link = "https://najisto.centrum.cz/?fp=1&p=$j&what=zlatnictv%25C3%25AD";
             $crawlerHelper = new Crawler($guzzle->getContent($link));
 
             for ($i = 0; $i <= 200; $i++) {
@@ -113,7 +113,7 @@ class NajistoPatserCommand extends Command
      */
     public function writeToFile(array $arr) : void
     {
-        $stream = fopen('parsed4.csv', 'a');
+        $stream = fopen('parsed1.csv', 'a');
         foreach($arr as $item) {
             fputcsv($stream, $item, '|');
         }

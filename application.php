@@ -28,8 +28,12 @@ $application->add(new Commands\CZ\Obchodnirejstrikfirem\ObchodnirejstrikfiremPro
 /** obchody.sluzby.cz */
 $application->add(new Commands\CZ\Obchody\ObchodyParserCommand());
 
-/**  */
+/** www.najisto.cz */
 $application->add(new Commands\CZ\Najisto\NajistoPatserCommand());
+
+/** www.zivefirmy.cz */
+$application->add(new Commands\CZ\Zivefirmy\asinc\ZivefirmyParserCommand());
+$application->add(new Commands\CZ\Zivefirmy\notAsinc\ZivefirmyParserCommand());
 
 
 
