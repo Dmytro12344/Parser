@@ -49,11 +49,14 @@ class ZlatestrankyParserCommand extends Command
                         for($i = 0; $i <= $totalRecords -1; $i++){
 
                             $result = array_values([
+                                'category' => trim($this->getCategory($crawler, $i)),
                                 'name' => trim($this->getCompanyName($crawler, $i)),
-                                'phone' => trim($this->getPhone($crawler, $i)),
                                 'address' => trim($this->getAddress($crawler, $i)),
                                 'postal' => trim($this->getPostal($crawler, $i)),
                                 'city' => trim($this->getCity($crawler, $i)),
+                                'phone' => trim($this->getPhone($crawler, $i)),
+                                'email' => '',
+                                'site' => trim($this->getSite($crawler, $i)),
                             ]);
 
                             var_dump($result);
@@ -69,6 +72,34 @@ class ZlatestrankyParserCommand extends Command
                 $promise = $pool->promise();
                 $promise->wait();
         }
+    }
+
+    protected function getCategory(Crawler $crawler, int $k) : string
+    {
+        return $crawler->filter('.icon-list')->eq($k)->filter('li > a')->text();
+    }
+
+    protected function getSite(Crawler $crawler, int $k) : string
+    {
+
+        if($crawler->filterXPath("//div[@role='toolbar']")->eq($k)
+            ->filterXPath("//div[@role='group']")->eq(1)
+            ->filter('a')->eq(0)->count() > 0){
+
+            $site = $crawler->filterXPath("//div[@role='toolbar']")->eq($k)
+                ->filterXPath("//div[@role='group']")->eq(1)
+                ->filter('a')->eq(0)->attr('href');
+
+            $position = strrpos($site, 'www.');
+
+            if($position !== false){
+                return $site;
+            }
+
+        }
+
+
+        return '';
     }
 
     /**
@@ -157,7 +188,7 @@ class ZlatestrankyParserCommand extends Command
             return $currentCity;
         }
 
-        for($i = 3; $i <= count($city); $i++){
+        for($i = 3; $i <= @count($city); $i++){
             $currentCity .= @$city[$i] . ' ';
         }
 

@@ -11,14 +11,14 @@ use Wraps\GuzzleWrap;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
 
-class ZivefirmyParserCommand extends Command
+class CsfirmyParserCommand extends Command
 {
     /**
      * Command config
      */
     protected function configure() : void
     {
-        $this->setName('start-11')
+        $this->setName('start-13')
             ->setDescription('Starts download from www.zivefirmy.cz')
             ->setHelp('This command allow you start the script');
     }
@@ -31,22 +31,22 @@ class ZivefirmyParserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
         $guzzle = new GuzzleWrap();
-        $links = file('web/Commands/CZ/Zivefirmy/list.txt', FILE_SKIP_EMPTY_LINES);
+        $links = file('web/Commands/CZ/Csfirmy/list.txt', FILE_SKIP_EMPTY_LINES);
 
         foreach($links as $key => $link){
             $crawlerTest = new Crawler($guzzle->getContent(trim($link) . '1'));
 
             for($i = 1; $i <= $this->getTotalPages($crawlerTest); $i++) {
-                var_dump($i);
+
                 try {
                     $crawler = new Crawler($guzzle->getContent(trim($link) . $i));
-                    $category = $this->getCategory($crawler);
 
-                    for($j = 0; $j < 99999; $j++){
-                    $uri = 'https://www.zivefirmy.cz' . $this->getProfileLink($crawler, $j);
+                    for($j = 0; $j < 9999; $j++){
+                    $uri = 'https://www.csfirmy.cz' . $this->getProfileLink($crawler, $j);
+
                     $crawlerHelper = new Crawler($guzzle->getContent($uri));
                         $result = array_values([
-                            'category' => $category,
+                            'category' => trim($this->getCategory($crawlerHelper)),
                             'name' => trim($this->getCompanyName($crawlerHelper)),
                             'street' => trim($this->getAddress($crawlerHelper)),
                             'postal' => trim($this->getPostal($crawlerHelper)),
@@ -61,6 +61,7 @@ class ZivefirmyParserCommand extends Command
                     }
                 }
                 catch (\Exception $e){
+                    echo '<br><h1>'. $e->getMessage(). '</h1><br><br>';
                     continue;
                 }
 
@@ -71,27 +72,36 @@ class ZivefirmyParserCommand extends Command
 
     protected function getCategory(Crawler $crawler) : string
     {
-        $filter = $crawler->filter('.content-main > h1')->html();
-        $category = explode('<span ', $filter);
-        return trim($category[0]);
+        return $crawler->filter('.col-md-12 > h2')->text();
     }
 
     protected function getCompanyName(Crawler $crawler) : string
     {
-        if($crawler->filterXPath("//span[@itemprop='name']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='name']")->text();
+        if($crawler->filter('.col-md-12 > h1')->count() > 0){
+            return $crawler->filter('.col-md-12 > h1')->text();
         }
         return '';
     }
 
-    public function getPhone(Crawler $crawler) : string
+    public function getPhone(Crawler $crawler)
     {
-        if($crawler->filterXPath("//span[@itemprop='telephone']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='telephone']")->text();
-        }
+        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
 
-        if($crawler->filterXPath("//span[@itemprop='telephone']")->filter('font > font')->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='telephone']")->filter('font > font')->text();
+        if($filter->filter('li')->eq(2)->count() > 0){
+            $phone = $filter->filter('li')->eq(2)->text();
+
+            $phone = str_replace(' ', '', $phone);
+            $clearPhone = explode('-', $phone);
+
+            if(!empty($clearPhone[1])){
+                $phone = $clearPhone[0];
+            }
+
+            $phone = str_replace('+', '', $phone);
+
+            if(is_numeric($phone)){
+                return $phone;
+            }
         }
 
         return '';
@@ -99,42 +109,103 @@ class ZivefirmyParserCommand extends Command
 
     protected function getEmail(Crawler $crawler) : string
     {
-        if($crawler->filterXPath("//a[@itemprop='email']")->count() > 0){
-            return $crawler->filterXPath("//a[@itemprop='email']")->text();
+        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
+
+        if($filter->filter('li > a')->eq(0)->count() > 0){
+            $email = trim($filter->filter('li > a')->eq(0)->text());
+
+            $position = strrpos($email, '@');
+            if($position !== false){
+                return $email;
+            }
         }
+
         return '';
     }
 
     protected function getSite(Crawler $crawler) : string
     {
-        if($crawler->filterXPath("//span[@class='title']")->count() > 0){
-            return $crawler->filterXPath("//span[@class='title']")->text();
+        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
+
+        if($filter->filter('li > a')->eq(1)->count() > 0) {
+
+            $site = trim($filter->filter('li > a')->eq(1)->text());
+            $position = strrpos($site, '@');
+
+            if($position === false){
+                return $site;
+            }
         }
+
+        if($filter->filter('li > a')->eq(0)->count() > 0){
+
+            $site = trim($filter->filter('li > a')->eq(0)->text());
+            $position = strrpos($site, '@');
+
+            if($position === false){
+                return $site;
+            }
+        }
+
         return '';
     }
 
-
     protected function getAddress(Crawler $crawler) : string
     {
-        if($crawler->filterXPath("//span[@itemprop='streetAddress']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='streetAddress']")->text();
-        }
-        return '';
+        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
+        return $filter->filter('li')->eq(0)->text();
     }
 
     protected function getPostal(Crawler $crawler) : string
     {
-        if($crawler->filterXPath("//span[@itemprop='postalCode']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='postalCode']")->text();
+        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
+
+        if($filter->filter('li')->eq(1)->count() > 0){
+            $postlANDcity = trim($filter->filter('li')->eq(1)->text());
+
+            $clearPostal = explode(' ', $postlANDcity);
+
+            if(is_numeric($clearPostal[0]) && is_numeric($clearPostal[1])){
+                return $clearPostal[0] . $clearPostal[1];
+            }
+
+            if(is_numeric($clearPostal[0]) && !is_numeric($clearPostal[1])){
+                return $clearPostal[0];
+            }
+
+            if(!is_numeric($clearPostal[0] && is_numeric($clearPostal[1]))){
+                return $clearPostal[1]. ($clearPostal[2] ?? '');
+            }
         }
+
         return '';
     }
 
     protected function getCity(Crawler $crawler) : string
     {
-        if($crawler->filterXPath("//span[@itemprop='addressLocality']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='addressLocality']")->text();
+        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
+
+        if($filter->filter('li')->eq(1)->count() > 0){
+
+            $postlANDcity = trim($filter->filter('li')->eq(1)->text());
+            $city = '';
+            $clearCity = explode(' ', $postlANDcity);
+
+            if(!is_numeric($clearCity[2])){
+                for($i = 2; $i < @count($clearCity); $i++){
+                    $city .= $clearCity[$i] . ' ';
+                }
+                return $city;
+            }
+
+            if(!is_numeric($clearCity[0])){
+                for($i = 0; $i <= @count($clearCity); $i++){
+                    $city .= $clearCity[$i] . ' ';
+                }
+                return $city;
+            }
         }
+
         return '';
     }
 
@@ -145,8 +216,9 @@ class ZivefirmyParserCommand extends Command
      */
     protected function getTotalPages(Crawler $crawler) : int
     {
-        $filter =  $crawler->filterXPath("//ul[@class='pagination']")->children()->count();
-        $totalPages = $crawler->filter('.pagination > li')->eq($filter -2)->text();
+        $liPosition =  $crawler->filter('.pagination')->children()->count();
+        $getLink = $crawler->filter('.pagination > li')->eq($liPosition - 1)->filter('a')->attr('href');
+        $totalPages = substr($getLink, -1);
         return (int)$totalPages;
     }
 
@@ -162,8 +234,8 @@ class ZivefirmyParserCommand extends Command
 
     protected function getProfileLink(Crawler $crawler, int $k) : string
     {
-        $filter = $crawler->filter('.block')->eq($k);
-        return trim($filter->filter( '.title > a')->eq(0)->attr('href'));
+        $filter = $crawler->filter('.shadow > .title')->eq($k);
+        return trim($filter->filter( 'h2 > a')->attr('href'));
     }
 
     public function getProfile(int $total, Crawler $crawler) : \Generator

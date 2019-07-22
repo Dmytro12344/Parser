@@ -1,0 +1,15 @@
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=0&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=1&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=2&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=3&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=4&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=5&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=6&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=7&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=8&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=9&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=10&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=11&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=12&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=13&page=
+http://www.infoaktualne.cz/katalog?filter=&categoryId=54&regionId=14&page=

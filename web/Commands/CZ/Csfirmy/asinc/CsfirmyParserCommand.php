@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Commands\CZ\Zivefirmy\asinc;
+namespace Commands\CZ\Csfirmy\asinc;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,7 +11,7 @@ use Wraps\GuzzleWrap;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
 
-class ZivefirmyParserCommand extends Command
+class CsfirmyParserCommand extends Command
 {
     /**
      * Command config
@@ -33,7 +33,7 @@ class ZivefirmyParserCommand extends Command
 
     }
 
-   
+
 
     /**
      * @param array $arr

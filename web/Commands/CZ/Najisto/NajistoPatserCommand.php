@@ -21,7 +21,7 @@ class NajistoPatserCommand extends Command
     protected function configure() : void
     {
         $this->setName('start-4')
-            ->setDescription('Starts download from najisto.centrum.cz')
+            ->setDescription('Starts download from www.najisto.centrum.cz')
             ->setHelp('This command allow you start the script');
     }
 
