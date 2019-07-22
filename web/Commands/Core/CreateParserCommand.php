@@ -55,11 +55,25 @@ class CreateParserCommand extends Command
 
 
         $file = 'web/Commands/'. $country .'/' . $name . '/' . $name . 'ParserCommand.php';
-        mkdir('web/Commands/'. $country .'/' . $name);
+        $fileDir = 'web/Commands/'. $country .'/' . $name;
+
+        if(!is_dir($fileDir)){
+            mkdir('web/Commands/'. $country .'/' . $name);
+        }
 
         if(!file_exists($file)){
             $fp = fopen($file, 'w+');
+
             fclose($fp);
+
+            $output->writeln([
+                'File was successfully created',
+            ]);
+
+        } else {
+            $output->writeln([
+                'This file has already been created.',
+            ]);
         }
 
 
@@ -69,10 +83,6 @@ class CreateParserCommand extends Command
         ]);
     }
 
-    protected function createDir($path)
-    {
-        return is_dir($path) || mkdir($path);
-    }
 
 
 }
