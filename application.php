@@ -62,7 +62,7 @@ $application->add(new Commands\CZ\Infoaktualne\notAsync\InfoaktualneParserComman
 
 /** http://www.privredni-imenik.com */
 $application->add(new Commands\RS\Privredni\async\PrivredniParserCommand());
-$application->add(new Commands\RS\Privredni\async\PrivredniVacuumingCommand());
+$application->add(new Commands\RS\Privredni\async\VacuumingProfileCommand());
 
 
 

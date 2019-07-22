@@ -37,7 +37,7 @@ class CreateStartCommand extends Command
 
             $total_pages = $this->checkCountPages(trim($link));
             for ($i = 1; $i <= $total_pages; $i++) {
-                $url = $this->linkPars($link, $i);
+                $url = urldecode($this->linkPars($link, $i));
                 try {
                     $process = new Process("php application.php app:vacuuming -u $url");
                     $process->start();

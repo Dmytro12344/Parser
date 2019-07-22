@@ -41,8 +41,6 @@ class VacuumingCommand extends Command
             ]);
 
 
-
-
             $this->writeToFile([$result]);
 
         }
