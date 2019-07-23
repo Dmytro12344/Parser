@@ -33,7 +33,11 @@ class CreateParserCommand extends Command
         $helperType = $this->getHelper('question');
         $questionType = new ChoiceQuestion(
             'Please, choice needed type of parser',
-            array('empty', 'asyncWithProfile', 'notAsyncWithProfile', 'asyncWithotProfile', 'notAsyncWithoutProfile')
+            array('empty',
+                'async with profile',
+                'not async with profile',
+                'async without profile',
+                'not async without profile')
         );
         $questionType->setErrorMessage('Type %s is invalid.');
         $type = $helperType->ask($input, $output, $questionType);
@@ -54,33 +58,85 @@ class CreateParserCommand extends Command
         $name = $helper->ask($input, $output, $questionName);
 
 
-        $file = 'web/Commands/'. $country .'/' . $name . '/' . $name . 'ParserCommand.php';
-        $fileDir = 'web/Commands/'. $country .'/' . $name;
+        $file = 'web/Commands/'. $country .'/' . $name . '/' . $this->convertType($type)['dir'] . '/' . $name . 'ParserCommand.php';
+        $parserNameDir = 'web/Commands/'. $country .'/' . $name;
+        $parserTypeDir = 'web/Commands/'. $country .'/' . $name . '/' . $this->convertType($type)['dir'];
+        $this->dirControl($parserNameDir, $parserTypeDir);
+        $this->fileControl($file, $type, $country, $name);
+    }
 
-        if(!is_dir($fileDir)){
-            mkdir('web/Commands/'. $country .'/' . $name);
-        }
-
+    protected function fileControl(string $file, string $type, string $country, string $name) : void
+    {
         if(!file_exists($file)){
             $fp = fopen($file, 'w+');
-
+            fwrite($fp, $this->generatePHPFile($type, $country, $name));
             fclose($fp);
-
-            $output->writeln([
-                'File was successfully created',
-            ]);
-
+            echo 'File was successfully created';
         } else {
-            $output->writeln([
-                'This file has already been created.',
-            ]);
+            echo 'This file has already been created.';
+        }
+    }
+
+    protected function generatePHPFile(string $type, string $country, string $name) : string
+    {
+        if($this->convertType($type)['type'] === 'asyncWithoutProf'){
+            return $this->asyncWithoutProfile($this->convertType($type)['dir'], $country, $name);
         }
 
 
+        return 'Rejected';
+    }
 
-        $output->writeLn([
+    protected function asyncWithoutProfile(string $type, string $country, string $name) : string
+    {
+        $file  = "<?php \n\n";
+        $file .= "namespace Commands\{$country}\{$name}\{$type}; \n\n";
+        $file .= "use Symfony\Component\Console\Command\Command;\n";
+        $file .= "use Symfony\Component\Console\Input\InputInterface;\n";
+        $file .= "use Symfony\Component\Console\Output\OutputInterface;\n";
+        $file .= "use Symfony\Component\DomCrawler\Crawler;\n";
+        $file .= "use Symfony\Component\Process\Exception\ProcessFailedException;\n";
+        $file .= "use Symfony\Component\Process\Process;\n";
+        $file .= "use Wraps\GuzzleWrap; \n\n";
+        $file .= "class {$name}ParserCommand extends Command \n { \n";
+        $file .= " /** \n* Command config \n*/ \n  protected function configure() : void \n { \n";
 
-        ]);
+
+
+        return $file;
+    }
+
+    protected function dirControl(string $nameDir, string $typeDir) : void
+    {
+        if(!is_dir($nameDir)){
+            mkdir($nameDir);
+        }
+
+        if(!is_dir($typeDir)){
+            mkdir($typeDir);
+        }
+    }
+
+    protected function convertType(string $type) : array
+    {
+        if($type === 'async without profile'){
+            return ['dir' => 'async', 'type' => 'asyncWithoutProf'];
+        }
+
+        if($type === 'async with profile'){
+            return ['dir' => 'async', 'type' => 'asyncWithProf'];
+        }
+
+        if($type === 'not async with profile'){
+            return ['dir' => 'notAsync', 'type' => 'notAsyncWithProf'];
+        }
+
+
+        if($type === 'not async without profile'){
+            return ['dir' => 'notAsync', 'type' => 'notAsyncWithoutProf'];
+        }
+
+        return ['dir' => '', 'type' => ''];
     }
 
 
