@@ -1,11 +1,3 @@
-http://www.privredni-imenik.com/pretraga/abcd/09?abcd=09&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
-http://www.privredni-imenik.com/pretraga/abcd/A?abcd=A&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
-http://www.privredni-imenik.com/pretraga/abcd/B?abcd=B&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
-http://www.privredni-imenik.com/pretraga/abcd/C?abcd=C&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
-http://www.privredni-imenik.com/pretraga/abcd/%C4%8C?abcd=%C4%8C&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
-http://www.privredni-imenik.com/pretraga/abcd/%C4%86?abcd=%C4%86&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
-http://www.privredni-imenik.com/pretraga/abcd/D?abcd=D&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
-http://www.privredni-imenik.com/pretraga/abcd/Đ?abcd=Đ&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
 http://www.privredni-imenik.com/pretraga/abcd/DŽ?abcd=DŽ&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
 http://www.privredni-imenik.com/pretraga/abcd/E?abcd=E&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
 http://www.privredni-imenik.com/pretraga/abcd/F?abcd=F&keyword=&cities_id=0&category_id=0&sub_category_id=0&page=
