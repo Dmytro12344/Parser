@@ -79,7 +79,7 @@ class ZivefirmyParserCommand extends Command
     protected function getCompanyName(Crawler $crawler) : string
     {
         if($crawler->filterXPath("//span[@itemprop='name']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='name']")->text();
+            return $crawler->filterXPath("//span[@itemprop='name']")->eq(0)->text();
         }
         return '';
     }
