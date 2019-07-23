@@ -39,13 +39,13 @@ class PrivredniParserCommand extends Command
         $activeProcess = [];
 
         foreach($links as $key => $link){
+            try {
 
-            $total_pages = $this->getTotalPages(trim($link).'1');
+                $total_pages = $this->getTotalPages(trim($link) . '1');
 
-            for ($i = 1; $i <= $total_pages; $i++) {
-                $uri = trim($link) . $i;
+                for ($i = 1; $i <= $total_pages; $i++) {
+                    $uri = trim($link) . $i;
 
-                try {
                     $process = new Process("php application.php rs:vacuuming-1 --url='$uri'");
                     $process->start();
                     $activeProcess[] = $process;
@@ -54,11 +54,12 @@ class PrivredniParserCommand extends Command
 
                     /** Cleaning memory of useless processes */
                     $this->processControl($activeProcess);
-                } catch (ProcessFailedException $e) {
-                    $output->writeln([
-                        $e->getMessage(),
-                    ]);
                 }
+
+            } catch (ProcessFailedException $e) {
+                $output->writeln([
+                    $e->getMessage(),
+                ]);
             }
         }
     }
@@ -91,9 +92,14 @@ class PrivredniParserCommand extends Command
     {
         $guzzle = new GuzzleWrap();
         $crawler = new Crawler($guzzle->getContent(urldecode($url)));
-        $count = $crawler->filter('.mb30 > .pagination')->eq(3)->children()->count();
+            try {
 
-        return (int)$crawler->filter('.pagination')->eq(3)->filter('li')->eq($count - 2)->text();
+            $count = $crawler->filter('.mb30 > .pagination')->eq(3)->children()->count();
+            return (int)$crawler->filter('.pagination')->eq(3)->filter('li')->eq($count - 2)->text();
+
+        } catch(\Exception $e){
+                return 1;
+            }
     }
 
 
