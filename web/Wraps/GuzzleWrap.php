@@ -23,7 +23,7 @@ class GuzzleWrap
         var_dump($proxyString);
 
         return new Client([
-            'timeout' => 5.0,
+            'timeout' => 10.0,
             'cookie' => false,
             'proxy' => $proxyString,
         ]);

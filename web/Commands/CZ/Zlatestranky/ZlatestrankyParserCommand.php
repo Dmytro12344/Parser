@@ -202,9 +202,15 @@ class ZlatestrankyParserCommand extends Command
      */
     protected function getTotalPages(Crawler $crawler) : int
     {
-        $key = $crawler->filter('.pagination')->children()->count();
-        $totalPages = $crawler->filter('.pagination > li')->eq($key - 3)->text();
-        return (int)$totalPages;
+        try {
+
+            $key = $crawler->filter('.pagination')->children()->count();
+            $totalPages = $crawler->filter('.pagination > li')->eq($key - 3)->text();
+            return (int)$totalPages;
+
+        }catch (\Exception $exception){
+            return 0;
+        }
     }
 
     /**
@@ -238,7 +244,7 @@ class ZlatestrankyParserCommand extends Command
      */
     public function writeToFile(array $arr) : void
     {
-        $stream = fopen('parsed.csv', 'a');
+        $stream = fopen('parsed1.csv', 'a');
         foreach($arr as $item) {
             fputcsv($stream, $item, '|');
         }

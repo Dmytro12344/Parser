@@ -36,15 +36,14 @@ class ZivefirmyParserCommand extends Command
         foreach($links as $key => $link){
             $crawlerTest = new Crawler($guzzle->getContent(trim($link) . '1'));
 
-            for($i = 1; $i <= $this->getTotalPages($crawlerTest); $i++) {
-                var_dump($i);
-                try {
+                for ($i = 1; $i <= $this->getTotalPages($crawlerTest); $i++) {
                     $crawler = new Crawler($guzzle->getContent(trim($link) . $i));
                     $category = $this->getCategory($crawler);
+                    try {
 
-                    for($j = 0; $j < 99999; $j++){
-                    $uri = 'https://www.zivefirmy.cz' . $this->getProfileLink($crawler, $j);
-                    $crawlerHelper = new Crawler($guzzle->getContent($uri));
+                    for ($j = 0; $j < 99999; $j++) {
+                        $uri = 'https://www.zivefirmy.cz' . $this->getProfileLink($crawler, $j);
+                        $crawlerHelper = new Crawler($guzzle->getContent($uri));
                         $result = array_values([
                             'category' => $category,
                             'name' => trim($this->getCompanyName($crawlerHelper)),
@@ -56,15 +55,14 @@ class ZivefirmyParserCommand extends Command
                             'site' => trim($this->getSite($crawlerHelper)),
                         ]);
 
-                        var_dump($result);
+                        var_dump("now is $key link and $i page and $j element");
                         $this->writeToFile([$result]);
                     }
+                    }
+                    catch (\Exception $e){
+                        continue;
+                    }
                 }
-                catch (\Exception $e){
-                    continue;
-                }
-
-            }
         }
 
     }

@@ -64,6 +64,11 @@ $application->add(new Commands\CZ\Infoaktualne\notAsync\InfoaktualneParserComman
 $application->add(new Commands\RS\Privredni\async\PrivredniParserCommand());
 $application->add(new Commands\RS\Privredni\async\VacuumingProfileCommand());
 
+/** https://www.biznisgroup.rs */
+$application->add(new Commands\RS\Biznesgroup\async\BiznesgroupParserCommand());
+$application->add(new Commands\RS\Biznesgroup\async\MainContentCommand());
+$application->add(new Commands\RS\Biznesgroup\async\VacuumingProfileCommand());
+
 
 
 $application->run();

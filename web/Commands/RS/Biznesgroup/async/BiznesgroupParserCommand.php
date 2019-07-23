@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Commands\RS\Privredni\async;
+namespace Commands\RS\Biznesgroup\async;
 
 
 use Symfony\Component\Console\Command\Command;
@@ -13,7 +13,7 @@ use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
 
 
-class PrivredniParserCommand extends Command
+class BiznesgroupParserCommand extends Command
 {
 
 
@@ -22,8 +22,8 @@ class PrivredniParserCommand extends Command
      */
     protected function configure() : void
     {
-        $this->setName('rs:start-1')
-            ->setDescription('Starts download from http://www.privredni-imenik.com')
+        $this->setName('rs:start-2')
+            ->setDescription('Starts download from http://www.biznisgroup.rs')
             ->setHelp('This command allow you start the script');
     }
 
@@ -34,18 +34,18 @@ class PrivredniParserCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $links = file('web/Commands/RS/Privredni/async/list.txt', FILE_SKIP_EMPTY_LINES);
+        $links = file('web/Commands/RS/Biznesgroup/async/list.txt', FILE_SKIP_EMPTY_LINES);
         $activeProcess = [];
 
         foreach($links as $key => $link){
             try {
 
-                $total_pages = $this->getTotalPages(trim($link) . '1');
+                $total_pages = $this->getTotalPages($this->convertLink($link));
 
                 for ($i = 1; $i <= $total_pages; $i++) {
-                    $uri = trim($link) . $i;
+                    $uri = $this->convertLink($link, $i);
 
-                    $process = new Process("php application.php rs:vacuuming-1 --url='$uri'");
+                    $process = new Process("php application.php rs:main-2 --url='$uri'");
                     $process->start();
 
                     $activeProcess[] = $process;
@@ -75,8 +75,8 @@ class PrivredniParserCommand extends Command
      */
     public function processControl($processes) : void
     {
-        if(count($processes) >= 20){
-            while(count($processes) >= 20){
+        if(count($processes) >= 1){
+            while(count($processes) >= 1){
                 foreach($processes as $key => $runningProcess){
                     if(!$runningProcess->isRunning()){
                         unset($processes[$key]);
@@ -98,12 +98,17 @@ class PrivredniParserCommand extends Command
         $crawler = new Crawler($guzzle->getContent(urldecode($url)));
             try {
 
-            $count = $crawler->filter('.mb30 > .pagination')->eq(3)->children()->count();
-            return (int)$crawler->filter('.pagination')->eq(3)->filter('li')->eq($count - 2)->text();
+            $count = $crawler->filter('.nav-links > a')->count();
+            return (int)$crawler->filter('.nav-links > a')->eq($count - 2)->text();
 
         } catch(\Exception $e){
                 return 1;
             }
+    }
+
+    protected function convertLink(string $link, int $page=1) : string
+    {
+        return substr_replace($link, $page, -2) . '/';
     }
 
 
