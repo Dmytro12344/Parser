@@ -22,7 +22,7 @@ class CreateStartCommand extends Command
 
     protected function configure()
     {
-        $this->setName('app:start-download')
+        $this->setName('ro:start-1')
              ->setDescription('Starts download')
              ->setHelp('This command allow you start the script')
              ->addOption('links', 'l', InputOption::VALUE_REQUIRED, 'total pages from pagination ');
@@ -39,16 +39,21 @@ class CreateStartCommand extends Command
             for ($i = 1; $i <= $total_pages; $i++) {
                 $url = urldecode($this->linkPars($link, $i));
                 try {
-                    $process = new Process("php application.php app:vacuuming -u $url");
+                    $process = new Process("php application.php app:vacuuming -u '$url'");
                     $process->start();
                     $activeProcess[] = $process;
 
 
 
-                    var_dump($process->getPid() . " now $i page is processed");
+                    var_dump("link #$key and $i page is processed");
 
                     /** Cleaning memory of useless processes */
                     $this->processControl($activeProcess);
+
+                    if(($key === count($links) -1) && ($i === $total_pages)){
+                        sleep(60);
+                    }
+
                 } catch (ProcessFailedException $e) {
 
                 }
@@ -85,7 +90,7 @@ class CreateStartCommand extends Command
         return $link;
     }
 
-    public function checkCountPages($url)
+    public function checkCountPages($url) : int
     {
         $guzzle = new GuzzleWrap();
         $crawler = new Crawler($guzzle->getContent($url));
