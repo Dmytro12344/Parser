@@ -18,8 +18,8 @@ class CsfirmyParserCommand extends Command
      */
     protected function configure() : void
     {
-        $this->setName('start-13')
-            ->setDescription('Starts download from www.zivefirmy.cz')
+        $this->setName('cz:start-13')
+            ->setDescription('Starts download from www.csfirmy.cz')
             ->setHelp('This command allow you start the script');
     }
 
@@ -31,15 +31,18 @@ class CsfirmyParserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
         $guzzle = new GuzzleWrap();
-        $links = file('web/Commands/CZ/Csfirmy/list.txt', FILE_SKIP_EMPTY_LINES);
+        $categories = file('web/Commands/CZ/Csfirmy/list.txt', FILE_SKIP_EMPTY_LINES);
 
-        foreach($links as $key => $link){
-            $crawlerTest = new Crawler($guzzle->getContent(trim($link) . '1'));
+        foreach($categories as $key => $category){
 
-            for($i = 1; $i <= $this->getTotalPages($crawlerTest); $i++) {
+
+            $totalPages = $this->getTotalPages($category);
+
+            for($i = 1; $i <= $totalPages; $i++) {
 
                 try {
-                    $crawler = new Crawler($guzzle->getContent(trim($link) . $i));
+                    $link = "https://www.csfirmy.cz/vyhledavani/$i?q=" . urldecode(trim($category));
+                    $crawler = new Crawler($guzzle->getContent(trim($link)));
 
                     for($j = 0; $j < 9999; $j++){
                     $uri = 'https://www.csfirmy.cz' . $this->getProfileLink($crawler, $j);
@@ -61,7 +64,7 @@ class CsfirmyParserCommand extends Command
                     }
                 }
                 catch (\Exception $e){
-                    echo '<br><h1>'. $e->getMessage(). '</h1><br><br>';
+                    echo "\n\n\n\t\t\t\t\t" . $e->getMessage() . " $category\n\n\n\n";
                     continue;
                 }
 
@@ -72,154 +75,192 @@ class CsfirmyParserCommand extends Command
 
     protected function getCategory(Crawler $crawler) : string
     {
-        return $crawler->filter('.col-md-12 > h2')->text();
+        try {
+            return $crawler->filter('.col-md-12 > h2')->text();
+        }
+        catch (\Exception $e){
+            return '';
+        }
     }
 
     protected function getCompanyName(Crawler $crawler) : string
     {
-        if($crawler->filter('.col-md-12 > h1')->count() > 0){
+        try{
             return $crawler->filter('.col-md-12 > h1')->text();
         }
-        return '';
+        catch (\Exception $e){
+            return '';
+        }
     }
 
     public function getPhone(Crawler $crawler)
     {
-        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
-
-        if($filter->filter('li')->eq(2)->count() > 0){
+        try {
+            $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
             $phone = $filter->filter('li')->eq(2)->text();
-
             $phone = str_replace(' ', '', $phone);
             $clearPhone = explode('-', $phone);
 
-            if(!empty($clearPhone[1])){
+            if (!empty($clearPhone[1])) {
                 $phone = $clearPhone[0];
             }
 
             $phone = str_replace('+', '', $phone);
 
-            if(is_numeric($phone)){
+            if (is_numeric($phone)) {
                 return $phone;
             }
-        }
 
-        return '';
+            return '';
+
+        }catch (\Exception $e){
+            return '';
+        }
     }
 
     protected function getEmail(Crawler $crawler) : string
     {
-        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
+        try {
 
-        if($filter->filter('li > a')->eq(0)->count() > 0){
+            $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
             $email = trim($filter->filter('li > a')->eq(0)->text());
-
             $position = strrpos($email, '@');
-            if($position !== false){
+
+            if ($position !== false) {
                 return $email;
             }
-        }
 
-        return '';
+            return '';
+        } catch (\Exception $e){
+            return '';
+        }
     }
 
     protected function getSite(Crawler $crawler) : string
     {
-        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
+        try {
+            $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
 
-        if($filter->filter('li > a')->eq(1)->count() > 0) {
+            if ($filter->filter('li > a')->eq(1)->count() > 0) {
 
-            $site = trim($filter->filter('li > a')->eq(1)->text());
-            $position = strrpos($site, '@');
+                $site = trim($filter->filter('li > a')->eq(1)->text());
+                $position = strrpos($site, '@');
 
-            if($position === false){
-                return $site;
+                if ($position === false) {
+                    return $site;
+                }
             }
-        }
 
-        if($filter->filter('li > a')->eq(0)->count() > 0){
+            if ($filter->filter('li > a')->eq(0)->count() > 0) {
 
-            $site = trim($filter->filter('li > a')->eq(0)->text());
-            $position = strrpos($site, '@');
+                $site = trim($filter->filter('li > a')->eq(0)->text());
+                $position = strrpos($site, '@');
 
-            if($position === false){
-                return $site;
+                if ($position === false) {
+                    return $site;
+                }
             }
-        }
 
-        return '';
+            return '';
+        }
+        catch(\Exception $e){
+            return '';
+        }
     }
 
     protected function getAddress(Crawler $crawler) : string
     {
-        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
-        return $filter->filter('li')->eq(0)->text();
+        try {
+            $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
+            return $filter->filter('li')->eq(0)->text();
+        }catch (\Exception $e){
+            return '';
+        }
     }
 
     protected function getPostal(Crawler $crawler) : string
     {
-        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
+        try {
 
-        if($filter->filter('li')->eq(1)->count() > 0){
-            $postlANDcity = trim($filter->filter('li')->eq(1)->text());
+            $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
 
-            $clearPostal = explode(' ', $postlANDcity);
+            if ($filter->filter('li')->eq(1)->count() > 0) {
+                $postlANDcity = trim($filter->filter('li')->eq(1)->text());
 
-            if(is_numeric($clearPostal[0]) && is_numeric($clearPostal[1])){
-                return $clearPostal[0] . $clearPostal[1];
+                $clearPostal = explode(' ', $postlANDcity);
+
+                if (is_numeric($clearPostal[0]) && is_numeric($clearPostal[1])) {
+                    return $clearPostal[0] . $clearPostal[1];
+                }
+
+                if (is_numeric($clearPostal[0]) && !is_numeric($clearPostal[1])) {
+                    return $clearPostal[0];
+                }
+
+                if (!is_numeric($clearPostal[0] && is_numeric($clearPostal[1]))) {
+                    return $clearPostal[1] . ($clearPostal[2] ?? '');
+                }
             }
 
-            if(is_numeric($clearPostal[0]) && !is_numeric($clearPostal[1])){
-                return $clearPostal[0];
-            }
-
-            if(!is_numeric($clearPostal[0] && is_numeric($clearPostal[1]))){
-                return $clearPostal[1]. ($clearPostal[2] ?? '');
-            }
+            return '';
+        } catch (\Exception $e){
+            return '';
         }
-
-        return '';
     }
 
     protected function getCity(Crawler $crawler) : string
     {
-        $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
+        try {
+            $filter = $crawler->filterXPath("//ul[@class='table']")->eq(1);
 
-        if($filter->filter('li')->eq(1)->count() > 0){
+            if ($filter->filter('li')->eq(1)->count() > 0) {
 
-            $postlANDcity = trim($filter->filter('li')->eq(1)->text());
-            $city = '';
-            $clearCity = explode(' ', $postlANDcity);
+                $postlANDcity = trim($filter->filter('li')->eq(1)->text());
+                $city = '';
+                $clearCity = explode(' ', $postlANDcity);
 
-            if(!is_numeric($clearCity[2])){
-                for($i = 2; $i < @count($clearCity); $i++){
-                    $city .= $clearCity[$i] . ' ';
+                if (!is_numeric($clearCity[2])) {
+                    for ($i = 2; $i < @count($clearCity); $i++) {
+                        $city .= $clearCity[$i] . ' ';
+                    }
+                    return $city;
                 }
-                return $city;
+
+                if (!is_numeric($clearCity[0])) {
+                    for ($i = 0; $i <= @count($clearCity); $i++) {
+                        $city .= $clearCity[$i] . ' ';
+                    }
+                    return $city;
+                }
             }
 
-            if(!is_numeric($clearCity[0])){
-                for($i = 0; $i <= @count($clearCity); $i++){
-                    $city .= $clearCity[$i] . ' ';
-                }
-                return $city;
-            }
+            return '';
         }
-
-        return '';
+        catch (\Exception $e){
+            return '';
+        }
     }
 
     /**
-     * @param Crawler $crawler
+     * @param string $category
      * @return int
      * Returns total pages from site
      */
-    protected function getTotalPages(Crawler $crawler) : int
+    protected function getTotalPages(string $category) : int
     {
-        $liPosition =  $crawler->filter('.pagination')->children()->count();
-        $getLink = $crawler->filter('.pagination > li')->eq($liPosition - 1)->filter('a')->attr('href');
-        $totalPages = substr($getLink, -1);
-        return (int)$totalPages;
+        $guzzle = new GuzzleWrap();
+        $link = 'https://www.csfirmy.cz/vyhledavani/1?q=' . urldecode(trim($category));
+
+        try {
+            $crawler = new Crawler($guzzle->getContent(trim($link)));
+
+            $liPosition = $crawler->filter('.pagination')->children()->count();
+            $getLink = $crawler->filter('.pagination > li')->eq($liPosition - 1)->filter('a')->attr('href');
+            $totalPages = substr($getLink, -1);
+            return (int)$totalPages;
+        } catch (\Exception $e) {
+            return 1;
+        }
     }
 
     /**
@@ -229,7 +270,12 @@ class CsfirmyParserCommand extends Command
      */
     public function getTotalRecords(Crawler $crawler) : int
     {
-        return $crawler->filter('#containerIAS > .company-item')->count();
+        try {
+            return $crawler->filter('#containerIAS > .company-item')->count();
+        }
+        catch (\Exception $e){
+            return 0;
+        }
     }
 
     protected function getProfileLink(Crawler $crawler, int $k) : string
@@ -255,7 +301,7 @@ class CsfirmyParserCommand extends Command
      */
     public function writeToFile(array $arr) : void
     {
-        $stream = fopen('parsed5.csv', 'a');
+        $stream = fopen('parsed3.csv', 'a');
         foreach($arr as $item) {
             fputcsv($stream, $item, '|');
         }

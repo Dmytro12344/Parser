@@ -54,6 +54,14 @@ $application->add(new Commands\CZ\Csfirmy\notAsinc\CsfirmyParserCommand());
 /** http://www.infoaktualne.cz */
 $application->add(new Commands\CZ\Infoaktualne\notAsync\InfoaktualneParserCommand());
 
+/** https://www.podnikatel.cz */
+$application->add(new Commands\CZ\Podnikatel\async\PodnikatelParserCommand());
+$application->add(new Commands\CZ\Podnikatel\async\PodnikatelVacuumingCommand());
+
+/** https://rejstrik-firem.kurzy.cz */
+$application->add(new Commands\CZ\Rejstrik\async\RejstrikParserCommand());
+$application->add(new Commands\CZ\Rejstrik\async\RejstrikVacuumingCommand());
+
 
 
 
@@ -68,6 +76,7 @@ $application->add(new Commands\RS\Privredni\async\VacuumingProfileCommand());
 $application->add(new Commands\RS\Biznesgroup\async\BiznesgroupParserCommand());
 $application->add(new Commands\RS\Biznesgroup\async\MainContentCommand());
 $application->add(new Commands\RS\Biznesgroup\async\VacuumingProfileCommand());
+
 
 
 

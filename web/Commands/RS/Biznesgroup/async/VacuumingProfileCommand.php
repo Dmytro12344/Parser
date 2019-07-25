@@ -98,16 +98,22 @@ class VacuumingProfileCommand extends Command
     {
         try {
             $filter = $crawler->filter('.phone > span > a')->html();
+            $filter = preg_replace('/[a-zA-Z]/', '', $filter);
 
-            if(strpos($filter, ':')){
-                $strPhone = explode(':', $filter);
-
-                if(strpos($strPhone[1], '  ') || strpos($strPhone[1], ' ')){
-                    $phone = explode('  ', $strPhone[1]);
-                    $phone[0] = str_replace([' ', '(', ')', '-', '/'], '', $phone[0]);
-                    return $phone[0];
-                }
+            if(strpos($filter, ')')){
+                $filter = explode(')', $filter);
+                return str_replace(['/', ')', '(', '-', '+', ' ', '_'], '',$filter[0]);
             }
+
+            $filter = trim(preg_replace('~[^0-9 ]+~', '', $filter));
+
+            if(strpos($filter, ' ')){
+                $filter = explode(' ', $filter);
+                return $filter[0];
+            }
+
+            var_dump($filter);die;
+
             return '';
 
         } catch (\Exception $e) {
