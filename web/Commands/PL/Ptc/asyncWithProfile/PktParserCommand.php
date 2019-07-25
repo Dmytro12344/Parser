@@ -1,6 +1,6 @@
 <?php
 
-namespace Commands\RS\Biznesgroup\async;
+namespace Commands\PL\Ptc\asyncWithProfile;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,17 +11,15 @@ use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
 
 
-class BiznesgroupParserCommand extends Command
+class PktParserCommand extends Command
 {
-
-
     /**
      * Command config
      */
     protected function configure() : void
     {
-        $this->setName('rs:start-2')
-            ->setDescription('Starts download from http://www.biznisgroup.rs')
+        $this->setName('pl:start-1')
+            ->setDescription('Starts download from https://www.pkt.pl')
             ->setHelp('This command allow you start the script');
     }
 
@@ -32,28 +30,27 @@ class BiznesgroupParserCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $links = file('web/Commands/RS/Biznesgroup/async/list.txt', FILE_SKIP_EMPTY_LINES);
+        $categories = file('web/Commands/PL/Ptc/asyncWithProfile/list.txt', FILE_SKIP_EMPTY_LINES);
         $activeProcess = [];
 
-        foreach($links as $key => $link){
+        foreach($categories as $key => $category){
             try {
-
-                $total_pages = $this->getTotalPages($this->convertLink($link));
+                $total_pages = $this->getTotalPages($this->convertLink($category));
 
                 for ($i = 1; $i <= $total_pages; $i++) {
-                    $uri = $this->convertLink($link, $i);
+                    $uri = urldecode($this->convertLink($category, $i));
 
-                    $process = new Process("php application.php rs:main-2 --url='$uri'");
+                    $process = new Process("php application.php pl:main-1 --url='$uri'");
                     $process->start();
 
                     $activeProcess[] = $process;
 
-                    var_dump("$key link is processed, now $i page is processed");
+                    var_dump("$key link and $i page is processed");
 
                     /** Cleaning memory of useless processes */
                     $this->processControl($activeProcess);
 
-                    if($i === $total_pages && $key === count($links) - 1){
+                    if($i === $total_pages && $key === count($categories) - 1){
                         sleep(60);
                     }
                 }
@@ -73,8 +70,8 @@ class BiznesgroupParserCommand extends Command
      */
     public function processControl($processes) : void
     {
-        if(count($processes) >= 1){
-            while(count($processes) >= 1){
+        if(count($processes) >= 10){
+            while(count($processes) >= 10){
                 foreach($processes as $key => $runningProcess){
                     if(!$runningProcess->isRunning()){
                         unset($processes[$key]);
@@ -94,24 +91,31 @@ class BiznesgroupParserCommand extends Command
     {
         $guzzle = new GuzzleWrap();
         $crawler = new Crawler($guzzle->getContent(urldecode($url)));
-            try {
+        $totalRecordsFromPage = $this->getTotalRecords($crawler); //25
+        try {
+            $totalRecordsFromSite = trim($crawler->filter('.box-fall-back-messages > i + h1 > b')->html());
+            $totalRecordsFromSite = explode(' ', $totalRecordsFromSite);
+            $totalRecordsFromSite = preg_replace('/[^0-9]/', '', $totalRecordsFromSite[0]);
 
-            $count = $crawler->filter('.nav-links > a')->count();
-            return (int)$crawler->filter('.nav-links > a')->eq($count - 2)->text();
-
+            return ceil((int)$totalRecordsFromSite / (int)$totalRecordsFromPage);
         } catch(\Exception $e){
-                return 1;
-            }
+            return 1;
+        }
     }
 
-    protected function convertLink(string $link, int $page=1) : string
+    protected function getTotalRecords(Crawler $crawler) : int
     {
-        return substr_replace($link, $page, -2) . '/';
+        try{
+            return $crawler->filter('.list-sel')->count();
+        }
+        catch (\Exception $e) {
+            return 0;
+        }
     }
 
-
-
-
-
+    protected function convertLink(string $category, int $page=1) : string
+    {
+        return 'https://www.pkt.pl/szukaj/' . $category . '/' . $page;
+    }
 
 }

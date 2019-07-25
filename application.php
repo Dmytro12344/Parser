@@ -77,6 +77,21 @@ $application->add(new Commands\RS\Biznesgroup\async\BiznesgroupParserCommand());
 $application->add(new Commands\RS\Biznesgroup\async\MainContentCommand());
 $application->add(new Commands\RS\Biznesgroup\async\VacuumingProfileCommand());
 
+/** https://www.biznisgroup.rs */
+$application->add(new Commands\RS\Companywall\asyncWithProfile\CompanywallParserCommand());
+$application->add(new Commands\RS\Companywall\asyncWithProfile\VacuumingCompanywallCommand());
+
+
+
+
+/** PL */
+
+/** https://www.pkt.pl */
+$application->add(new Commands\PL\Ptc\asyncWithProfile\PktParserCommand());
+$application->add(new Commands\PL\Ptc\asyncWithProfile\MainContentCommand());
+$application->add(new Commands\PL\Ptc\asyncWithProfile\VacuumingProfileCommand());
+
+
 
 
 
