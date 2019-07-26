@@ -57,8 +57,8 @@ class MainContentCommand extends Command
      */
     protected function processControl($process, $crawler) : void
     {
-        if (count($process) >= 6) {
-            while (count($process) >= 6) {
+        if (count($process) >= 12) {
+            while (count($process) >= 12) {
                 foreach ($process as $key => $runningProcess) {
                     if (!$runningProcess->isRunning()) {
                         unset($process[$key]);

@@ -70,8 +70,8 @@ class PktParserCommand extends Command
      */
     public function processControl($processes) : void
     {
-        if(count($processes) >= 10){
-            while(count($processes) >= 10){
+        if(count($processes) >= 14){
+            while(count($processes) >= 14){
                 foreach($processes as $key => $runningProcess){
                     if(!$runningProcess->isRunning()){
                         unset($processes[$key]);
@@ -97,7 +97,7 @@ class PktParserCommand extends Command
             $totalRecordsFromSite = explode(' ', $totalRecordsFromSite);
             $totalRecordsFromSite = preg_replace('/[^0-9]/', '', $totalRecordsFromSite[0]);
 
-            return ceil((int)$totalRecordsFromSite / (int)$totalRecordsFromPage);
+            return (int)ceil((int)$totalRecordsFromSite / (int)$totalRecordsFromPage);
         } catch(\Exception $e){
             return 1;
         }
