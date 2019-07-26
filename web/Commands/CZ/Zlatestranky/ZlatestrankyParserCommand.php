@@ -19,7 +19,7 @@ class ZlatestrankyParserCommand extends Command
      */
     protected function configure() : void
     {
-        $this->setName('start-1')
+        $this->setName('cz:start-1')
             ->setDescription('Starts download from www.firmy.cz')
             ->setHelp('This command allow you start the script');
     }
@@ -32,14 +32,14 @@ class ZlatestrankyParserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
         $guzzle = new GuzzleWrap();
-        $links = file('web/Commands/CZ/Zlatestranky/list.txt', FILE_SKIP_EMPTY_LINES);
+        $categories = file('web/Commands/CZ/Zlatestranky/list.txt', FILE_SKIP_EMPTY_LINES);
 
-        foreach($links as $key => $link){
+        foreach($categories as $key => $category){
 
-            $crawler = new Crawler($guzzle->getContent($link . '1'));
+            $crawler = new Crawler($guzzle->getContent($this->convertLink(trim($category))));
             $totalPage = $this->getTotalPages($crawler);
 
-                $pool = new Pool($guzzle->Client(), $this->getContent($totalPage, $link), [
+                $pool = new Pool($guzzle->Client(), $this->getContent($totalPage, trim($category)), [
                     'concurrency' => 7,
                     'fulfilled' => function ($response, $index) {
 
@@ -72,6 +72,11 @@ class ZlatestrankyParserCommand extends Command
                 $promise = $pool->promise();
                 $promise->wait();
         }
+    }
+
+    protected function convertLink(string $category, int $page=1) : string
+    {
+        return urldecode("https://www.zlatestranky.cz/firmy/hledani/$category/$page");
     }
 
     protected function getCategory(Crawler $crawler, int $k) : string
@@ -225,14 +230,14 @@ class ZlatestrankyParserCommand extends Command
 
     /**
      * @param $total
-     * @param $url
+     * @param $category
      * @return \Generator
      * Generate new Request to get information from profile
      */
-    public function getContent(int $total, string $url) : \Generator
+    public function getContent(int $total, string $category) : \Generator
     {
         for ($k = 1; $k <= $total; $k++) {
-            $uri = $url . $k;
+            $uri = $this->convertLink($category , $k);
             var_dump($uri);
             yield new Request('GET', $uri);
         }

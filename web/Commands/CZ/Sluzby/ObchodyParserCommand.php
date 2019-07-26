@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Commands\CZ\Obchody;
+namespace Commands\CZ\Sluzby;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,7 +20,7 @@ class ObchodyParserCommand extends Command
      */
     protected function configure() : void
     {
-        $this->setName('start-3')
+        $this->setName('cz:start-3')
             ->setDescription('Starts download from www.obchody.sluzby.cz')
             ->setHelp('This command allow you start the script');
     }

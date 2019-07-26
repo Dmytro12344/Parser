@@ -48,7 +48,7 @@ class CsfirmyParserCommand extends Command
                     $uri = 'https://www.csfirmy.cz' . $this->getProfileLink($crawler, $j);
 
                     $crawlerHelper = new Crawler($guzzle->getContent($uri));
-                        $result = array_values([
+                        $result = [
                             'category' => trim($this->getCategory($crawlerHelper)),
                             'name' => trim($this->getCompanyName($crawlerHelper)),
                             'street' => trim($this->getAddress($crawlerHelper)),
@@ -57,10 +57,12 @@ class CsfirmyParserCommand extends Command
                             'phone' => trim($this->getPhone($crawlerHelper)),
                             'email' => trim($this->getEmail($crawlerHelper)),
                             'site' => trim($this->getSite($crawlerHelper)),
-                        ]);
+                        ];
 
                         var_dump($result);
-                        $this->writeToFile([$result]);
+                        if($result['name'] !== '' && $result['street'] !== '' && $result['postal'] !== '') {
+                            $this->writeToFile([$result]);
+                        }
                     }
                 }
                 catch (\Exception $e){

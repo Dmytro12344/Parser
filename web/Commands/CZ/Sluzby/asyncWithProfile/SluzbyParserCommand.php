@@ -1,6 +1,6 @@
 <?php
 
-namespace Commands\RS\Biznesgroup\async;
+namespace Commands\CZ\Sluzby\asyncWithProfile;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,17 +10,14 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
 
-
-class BiznesgroupParserCommand extends Command
+class SluzbyParserCommand extends Command
 {
-
-
     /**
      * Command config
      */
     protected function configure() : void
     {
-        $this->setName('rs:start-2')
+        $this->setName('cz:start-3')
             ->setDescription('Starts download from http://www.biznisgroup.rs')
             ->setHelp('This command allow you start the script');
     }
@@ -32,18 +29,15 @@ class BiznesgroupParserCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $links = file('web/Commands/RS/Biznesgroup/async/list.txt', FILE_SKIP_EMPTY_LINES);
+        $categories = file('web/Commands/CZ/Sluzby/asyncWithProfile/list.txt', FILE_SKIP_EMPTY_LINES);
         $activeProcess = [];
 
-        foreach($links as $key => $link){
+        foreach($categories as $key => $category){
             try {
+                for ($i = 1; $i <= 999999; $i++) {
 
-                $total_pages = $this->getTotalPages($this->convertLink($link));
-
-                for ($i = 1; $i <= $total_pages; $i++) {
-                    $uri = $this->convertLink($link, $i);
-
-                    $process = new Process("php application.php rs:main-2 --url='$uri'");
+                    $uri = $this->convertLink(trim($category), $i);
+                    $process = new Process("php application.php cz:main-3 --url='$uri'");
                     $process->start();
 
                     $activeProcess[] = $process;
@@ -53,8 +47,15 @@ class BiznesgroupParserCommand extends Command
                     /** Cleaning memory of useless processes */
                     $this->processControl($activeProcess);
 
-                    if($i === $total_pages && $key === count($links) - 1){
+                    /** checks last page */
+                    $page = $this->pageControl($uri);
+
+                    if(!$page && $key === count($categories) - 1){
                         sleep(60);
+                    }
+
+                    if(!$page){
+                        continue 2;
                     }
                 }
 
@@ -66,6 +67,17 @@ class BiznesgroupParserCommand extends Command
         }
     }
 
+    protected function pageControl(string $link) : bool
+    {
+        try{
+            $guzzle = new GuzzleWrap();
+            $crawler = new Crawler($guzzle->getContent($link));
+            $nextPage = $crawler->filter('.slp-icon-chevron-right')->text();
+            return true;
+        }catch (\Exception $e){
+            return false;
+        }
+    }
 
     /**
      * @param $processes
@@ -73,8 +85,8 @@ class BiznesgroupParserCommand extends Command
      */
     public function processControl($processes) : void
     {
-        if(count($processes) >= 1){
-            while(count($processes) >= 1){
+        if(count($processes) >= 20){
+            while(count($processes) >= 20){
                 foreach($processes as $key => $runningProcess){
                     if(!$runningProcess->isRunning()){
                         unset($processes[$key]);
@@ -94,18 +106,18 @@ class BiznesgroupParserCommand extends Command
     {
         $guzzle = new GuzzleWrap();
         $crawler = new Crawler($guzzle->getContent(urldecode($url)));
-            try {
+        try {
 
             $count = $crawler->filter('.nav-links > a')->count();
             return (int)$crawler->filter('.nav-links > a')->eq($count - 2)->text();
 
         } catch(\Exception $e){
-                return 1;
-            }
+            return 1;
+        }
     }
 
-    protected function convertLink(string $link, int $page=1) : string
+    protected function convertLink(string $category, int $page=1) : string
     {
-        return substr_replace($link, $page, -2) . '/';
+        return urldecode("https://katalog.sluzby.cz/$page?what=$category/1");
     }
 }

@@ -37,13 +37,18 @@ $application->add(new Commands\CZ\Obchodnirejstrikfirem\ObchodnirejstrikfiremPar
 $application->add(new Commands\CZ\Obchodnirejstrikfirem\ObchodnirejstrikfiremProfileCommand());
 
 /** https://obchody.sluzby.cz */
-$application->add(new Commands\CZ\Obchody\ObchodyParserCommand());
+$application->add(new  Commands\CZ\Sluzby\asyncWithProfile\SluzbyParserCommand());
+$application->add(new  Commands\CZ\Sluzby\asyncWithProfile\MainContentCommand());
+$application->add(new  Commands\CZ\Sluzby\asyncWithProfile\VacuumingProfileCommand());
 
 /** https://www.najisto.cz */
 $application->add(new Commands\CZ\Najisto\NajistoPatserCommand());
 
 /** https://www.zivefirmy.cz */
 $application->add(new Commands\CZ\Zivefirmy\asinc\ZivefirmyParserCommand());
+$application->add(new Commands\CZ\Zivefirmy\asinc\MainContentCommand());
+$application->add(new Commands\CZ\Zivefirmy\asinc\VacuumingProfileContent());
+
 $application->add(new Commands\CZ\Zivefirmy\notAsinc\ZivefirmyParserCommand());
 
 

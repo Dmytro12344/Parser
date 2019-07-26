@@ -1,58 +1,27 @@
-Confectionery
-Cukrářství
-Sladký catering
-Cukrářská výroba
-Cukrárenská výroba
-Cukrářské výrobky
-Cukrárenské výrobky
-Cukrářské kurzy
-Cukrář
-Cukráři
-Cukrařina
-Perníkařství
-Pernikář
-Pernikáři
-Výroba zákusků
-Výroba dortů
-Výrobna zákusků
-Výrobna dortů
-Továrna na zákusky
-Továrna na dorty
-Zákusky na zakázku
-Zákusky na objednání
-Dorty na objednání
-Dorty na zakázku
-Zdobení dortů
-Marcipán
-Cukroví
-Perník
-Perníky
-Zákusek
-Domácí zákusky
-Zákusky
-Řez
-Řezy
-Domácí dorty
-Dort
-Dortík
-Dorty
-Dortíky
-Dětské dorty
-Speciální dorty
-Narozeninové dorty
-Svatební dorty
-Koňaková špička
-Koňakové špičky
-Laskonka
-Laskonky
-Větrník
-Větrníky
-Kremrole
-Domácí sušenky
-Pralinka
-Pralinky
-Žloutkový řez
-Žloutkové řezy
-Indiánek
-Indiánky
-Minidezery
+veterina
+veterinář
+veterinární
+veterináři
+veteriny
+zvířecí doktor
+zvířecí lékař
+veterinarian
+veterinary ambulance
+veterinary medicine
+veterinary clinic
+veterinární praxe
+veterinární chiropraxe
+MVDr.
+Veterinární lékař
+veterinární ordinace
+veterinární ambulance
+veterinární poradna
+veterinární služba
+veterinární pohotovost
+veterinární péče
+veterinární klinika
+veterinární lékařství
+veterinární lékař
+zvěrolékař
+veterinární léčba
+veterinární léčebna

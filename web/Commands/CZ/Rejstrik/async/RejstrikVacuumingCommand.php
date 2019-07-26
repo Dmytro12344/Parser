@@ -31,7 +31,7 @@ class RejstrikVacuumingCommand extends Command
 
             for ($i = 0; $i < $totalRecords; $i++) {
 
-                $result = array_values([
+                $result = [
                     'category' => trim($this->getCategory($crawler)),
                     'name' => trim($this->getCompanyName($crawler, $i)),
                     'address' => trim($this->getStreet($crawler, $i)),
@@ -40,10 +40,12 @@ class RejstrikVacuumingCommand extends Command
                     'phone' => '',
                     'email' => '',
                     'site' => '',
-                ]);
+                ];
 
                 var_dump($result);
-                $this->writeToFile([$result]);
+                if($result['name'] !== '' && $result['address'] !== '' && $result['postal'] !== '') {
+                    $this->writeToFile([$result]);
+                }
             }
         }catch(\Exception $e){
             echo $e->getMessage();

@@ -17,7 +17,7 @@ class InfoaktualneParserCommand extends Command
      */
     protected function configure() : void
     {
-        $this->setName('start-21')
+        $this->setName('cz:start-21')
             ->setDescription('Starts download from www.najisto.centrum.cz')
             ->setHelp('This command allow you start the script');
     }
@@ -40,11 +40,8 @@ class InfoaktualneParserCommand extends Command
                     $totalRecords = $this->getTotalRecords($crawlerHelper);
 
                     try {
-
                         for ($i = 0; $i <= $totalRecords; $i++) {
-
-
-                            $result = array_values([
+                            $result = [
                                 'category' => trim($this->getCategory($crawlerHelper)),
                                 'name' => trim($this->getCompanyName($crawlerHelper, $i)),
                                 'street' => trim($this->getAddress($crawlerHelper, $i)),
@@ -53,9 +50,12 @@ class InfoaktualneParserCommand extends Command
                                 'phone' => trim($this->getPhone($crawlerHelper, $i)),
                                 'email' => trim($this->getEmail($crawlerHelper, $i)),
                                 'site' => trim($this->getSite($crawlerHelper, $i)),
-                            ]);
+                            ];
+
                             var_dump("link number $j, page number $i");
-                            $this->writeToFile([$result]);
+                            if($result['name'] !== '' && $result['street'] !== '' && $result['postal'] !== '') {
+                                $this->writeToFile([$result]);
+                            }
                         }
                     }
                     catch (\Exception $e){
