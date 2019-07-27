@@ -1,62 +1,53 @@
 <?php
 
-namespace Commands;
+
+namespace Commands\CZ\Rejstrik\async;
+
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
 
-
-class CreateStartCommand extends Command
+class RejstrikParserCommand extends Command
 {
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     protected function configure()
     {
-        $this->setName('ro:start-1')
-             ->setDescription('Starts download')
-             ->setHelp('This command allow you start the script')
-             ->addOption('links', 'l', InputOption::VALUE_REQUIRED, 'total pages from pagination ');
+        $this->setName('cz:start-41')
+            ->setDescription('Starts download')
+            ->setHelp('This command allow you start the script');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $links = file('list.txt', FILE_SKIP_EMPTY_LINES);
+
+        $categories = file('web/Commands/CZ/Rejstrik/async/list.txt', FILE_SKIP_EMPTY_LINES);
         $activeProcess = [];
 
-        foreach($links as $key => $link) {
+        foreach($categories as $key => $category) {
+            $totalPages = $this->getTotalPages(trim($category));
 
-            $total_pages = $this->checkCountPages(trim($link));
-            for ($i = 1; $i <= $total_pages; $i++) {
-                $url = urldecode($this->linkPars($link, $i));
+            for ($i = 1; $i <= $totalPages; $i++) {
+                $url = urldecode("https://rejstrik-firem.kurzy.cz/hledej-firmy/?s=$category&page=$i");
+
                 try {
-                    $process = new Process("php application.php app:vacuuming -u '$url'");
+                    $process = new Process("php application.php cz:vacuuming-41 -u '$url'");
                     $process->start();
                     $activeProcess[] = $process;
 
-
-
-                    var_dump("link #$key and $i page is processed");
+                    var_dump("$key category and $i page is processed");
 
                     /** Cleaning memory of useless processes */
                     $this->processControl($activeProcess);
-
-                    if(($key === count($links) -1) && ($i === $total_pages)){
-                        sleep(60);
-                    }
-
                 } catch (ProcessFailedException $e) {
 
                 }
+            }
+            if($key === count($categories) - 1){
+                sleep(60);
             }
         }
 
@@ -90,18 +81,22 @@ class CreateStartCommand extends Command
         return $link;
     }
 
-    public function checkCountPages($url) : int
+    protected function getTotalPages(string $category) : int
     {
-        $guzzle = new GuzzleWrap();
-        $crawler = new Crawler($guzzle->getContent($url));
-            $filter = $crawler->filter('#what-where-line > span')->text();
-            $filter = explode(" ", $filter );
-            $total_page = (int)$filter[2] / 20;
-        return ceil($total_page);
+        try {
+            $guzzle = new GuzzleWrap();
+            $link = "https://rejstrik-firem.kurzy.cz/hledej-firmy/?s=$category&page=1";
+            $crawler = new Crawler($guzzle->getContent($link));
+
+            $filter = $crawler->filter('h2 + ul + .or_paginate')->text();
+
+            $totalPages = explode('z', $filter);
+            $pages = explode(' ', $totalPages[1]);
+
+            return (int)$pages[1];
+        }
+        catch (\Exception $e){
+            return 1;
+        }
     }
-
-
-
-
-
 }

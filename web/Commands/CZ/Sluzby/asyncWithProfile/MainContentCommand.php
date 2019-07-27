@@ -1,12 +1,11 @@
 <?php
 
-
-namespace Commands\RS\Biznesgroup\async;
+namespace Commands\CZ\Sluzby\asyncWithProfile;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
@@ -19,7 +18,7 @@ class MainContentCommand extends Command
      */
     protected function configure() : void
     {
-        $this->setName('rs:main-2')
+        $this->setName('cz:main-3')
             ->setDescription('Starts download')
             ->setHelp('This command allow you start the script')
             ->addOption('url', 'u', InputOption::VALUE_REQUIRED);
@@ -38,7 +37,7 @@ class MainContentCommand extends Command
 
         /** Creates new Process (max of processes is total pages ) */
         foreach ($this->getProfile($crawler) as $url) {
-            $process = new Process("php application.php rs:vacuuming-2 --url=$url");
+            $process = new Process("php application.php cz:vacuuming-3 --url='$url'");
             $process->start();
 
             /** total processes */
@@ -55,8 +54,8 @@ class MainContentCommand extends Command
      */
     protected function processControl($process, $crawler) : void
     {
-        if (count($process) >= 1) {
-            while (count($process) >= 1) {
+        if (count($process) >= 12) {
+            while (count($process) >= 12) {
                 foreach ($process as $key => $runningProcess) {
                     if (!$runningProcess->isRunning()) {
                         unset($process[$key]);
@@ -76,11 +75,12 @@ class MainContentCommand extends Command
     protected function getProfile(Crawler $crawler) : array
     {
         $url = [];
-        $filter = $crawler->filterXPath("//a[@class='read-more-link']");
+        $filter = $crawler->filter('.slp-list-offers-item');
 
         for ($k = 0; $k < $filter->count(); $k++) {
-            $url[] = $filter->eq($k)->attr('href');
+            $url[] = $filter->eq($k)->filter('strong > a')->attr('href');
         }
         return $url;
     }
+
 }

@@ -31,12 +31,13 @@ class ZivefirmyParserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
         $guzzle = new GuzzleWrap();
-        $links = file('web/Commands/CZ/Zivefirmy/list.txt', FILE_SKIP_EMPTY_LINES);
+        $categories = file('web/Commands/CZ/Zivefirmy/list.txt', FILE_SKIP_EMPTY_LINES);
+        $url = 'https://www.zivefirmy.cz/?q=';
 
-        foreach($links as $key => $link){
-            $crawlerTest = new Crawler($guzzle->getContent(trim($link) . '1'));
+        foreach($categories as $key => $cat){
+            $link = $url . urldecode(trim($cat)) . '&pg=';
 
-                for ($i = 1; $i <= $this->getTotalPages($crawlerTest); $i++) {
+                for ($i = 1; $i <= $this->getTotalPages(urldecode($link)); $i++) {
                     $crawler = new Crawler($guzzle->getContent(trim($link) . $i));
                     $category = $this->getCategory($crawler);
                     try {
@@ -55,7 +56,7 @@ class ZivefirmyParserCommand extends Command
                             'site' => trim($this->getSite($crawlerHelper)),
                         ]);
 
-                        var_dump("now is $key link and $i page and $j element");
+                        var_dump("now is $cat Category and $i page and $j element");
                         $this->writeToFile([$result]);
                     }
                     }
@@ -137,15 +138,23 @@ class ZivefirmyParserCommand extends Command
     }
 
     /**
-     * @param Crawler $crawler
+     * @param string $uri
      * @return int
      * Returns total pages from site
      */
-    protected function getTotalPages(Crawler $crawler) : int
+    protected function getTotalPages(string $uri) : int
     {
-        $filter =  $crawler->filterXPath("//ul[@class='pagination']")->children()->count();
-        $totalPages = $crawler->filter('.pagination > li')->eq($filter -2)->text();
-        return (int)$totalPages;
+        $guzzle = new GuzzleWrap();
+
+        try {
+            $crawler = new Crawler($guzzle->getContent(trim($uri) . '1'));
+            $filter = $crawler->filterXPath("//ul[@class='pagination']")->children()->count();
+            $totalPages = $crawler->filter('.pagination > li')->eq($filter - 2)->text();
+            return (int)$totalPages;
+        }
+        catch (\Exception $e){
+            return 1;
+        }
     }
 
     /**
@@ -181,7 +190,7 @@ class ZivefirmyParserCommand extends Command
      */
     public function writeToFile(array $arr) : void
     {
-        $stream = fopen('parsed5.csv', 'a');
+        $stream = fopen('parsed1.csv', 'a');
         foreach($arr as $item) {
             fputcsv($stream, $item, '|');
         }

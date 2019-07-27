@@ -37,13 +37,18 @@ $application->add(new Commands\CZ\Obchodnirejstrikfirem\ObchodnirejstrikfiremPar
 $application->add(new Commands\CZ\Obchodnirejstrikfirem\ObchodnirejstrikfiremProfileCommand());
 
 /** https://obchody.sluzby.cz */
-$application->add(new Commands\CZ\Obchody\ObchodyParserCommand());
+$application->add(new  Commands\CZ\Sluzby\asyncWithProfile\SluzbyParserCommand());
+$application->add(new  Commands\CZ\Sluzby\asyncWithProfile\MainContentCommand());
+$application->add(new  Commands\CZ\Sluzby\asyncWithProfile\VacuumingProfileCommand());
 
 /** https://www.najisto.cz */
 $application->add(new Commands\CZ\Najisto\NajistoPatserCommand());
 
 /** https://www.zivefirmy.cz */
 $application->add(new Commands\CZ\Zivefirmy\asinc\ZivefirmyParserCommand());
+$application->add(new Commands\CZ\Zivefirmy\asinc\MainContentCommand());
+$application->add(new Commands\CZ\Zivefirmy\asinc\VacuumingProfileContent());
+
 $application->add(new Commands\CZ\Zivefirmy\notAsinc\ZivefirmyParserCommand());
 
 
@@ -53,6 +58,14 @@ $application->add(new Commands\CZ\Csfirmy\notAsinc\CsfirmyParserCommand());
 
 /** http://www.infoaktualne.cz */
 $application->add(new Commands\CZ\Infoaktualne\notAsync\InfoaktualneParserCommand());
+
+/** https://www.podnikatel.cz */
+$application->add(new Commands\CZ\Podnikatel\async\PodnikatelParserCommand());
+$application->add(new Commands\CZ\Podnikatel\async\PodnikatelVacuumingCommand());
+
+/** https://rejstrik-firem.kurzy.cz */
+$application->add(new Commands\CZ\Rejstrik\async\RejstrikParserCommand());
+$application->add(new Commands\CZ\Rejstrik\async\RejstrikVacuumingCommand());
 
 
 
@@ -68,6 +81,22 @@ $application->add(new Commands\RS\Privredni\async\VacuumingProfileCommand());
 $application->add(new Commands\RS\Biznesgroup\async\BiznesgroupParserCommand());
 $application->add(new Commands\RS\Biznesgroup\async\MainContentCommand());
 $application->add(new Commands\RS\Biznesgroup\async\VacuumingProfileCommand());
+
+/** https://www.biznisgroup.rs */
+$application->add(new Commands\RS\Companywall\asyncWithProfile\CompanywallParserCommand());
+$application->add(new Commands\RS\Companywall\asyncWithProfile\VacuumingCompanywallCommand());
+
+
+
+
+/** PL */
+
+/** https://www.pkt.pl */
+$application->add(new Commands\PL\Ptc\asyncWithProfile\PktParserCommand());
+$application->add(new Commands\PL\Ptc\asyncWithProfile\MainContentCommand());
+$application->add(new Commands\PL\Ptc\asyncWithProfile\VacuumingProfileCommand());
+
+
 
 
 

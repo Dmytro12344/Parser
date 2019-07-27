@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Commands\RS\Biznesgroup\async;
+namespace Commands\RS\Companywall\asyncWithProfile;
 
 
 use Symfony\Component\Console\Command\Command;
@@ -11,12 +11,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Wraps\GuzzleWrap;
 
-class VacuumingProfileCommand extends Command
+class VacuumingCompanywallCommand extends Command
 {
-
     protected function configure(): void
     {
-        $this->setName('rs:vacuuming-2')
+        $this->setName('rs:vacuuming-3')
             ->setDescription('Starts download')
             ->setHelp('This command allow you start the script')
             ->addOption('url', 'u', InputOption::VALUE_REQUIRED, 'needed url for parsing');
@@ -24,25 +23,29 @@ class VacuumingProfileCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
-         $guzzle = new GuzzleWrap();
-         $crawler = new Crawler($guzzle->getContent($input->getOption('url')));
+        $guzzle = new GuzzleWrap();
+        $crawler = new Crawler($guzzle->getContent($input->getOption('url')));
+        $totalRecords = $this->getTotalRecords($crawler);
 
-         $result =
-             trim($this->getCompanyName($crawler)) . '}##{' .
-             trim($this->getStreet($crawler)) . '}##{' .
-             trim($this->getCity($crawler)) . '}##{' .
-             '}##{' .
-             trim($this->getPhone($crawler)) . "\n";
+        for($i = 0; $i < $totalRecords; $i++) {
+            $result =
+                trim($this->getCompanyName($crawler , $i)) . '}##{'.
+                trim($this->getStreet($crawler, $i)) . '}##{' ;
+            // trim($this->getCity($crawler)) . '}##{' .
+            // '}##{' .
+            // trim($this->getPhone($crawler)) . "\n";
 
-             var_dump($result);
-             $this->writeToFile($result);
+
+            var_dump($result);
+            $this->writeToFile($result);
+        }
+
     }
 
-
-    protected function getCompanyName(Crawler $crawler): string
+    protected function getCompanyName(Crawler $crawler, int $k): string
     {
         try {
-            return $crawler->filter('style + h1 > span > strong')->text();
+            return $crawler->filter('div > div > div > div > div > div > h3 > a')->eq($k)->text();
         } catch (\Exception $e) {
             return '';
         }
@@ -118,6 +121,16 @@ class VacuumingProfileCommand extends Command
 
         } catch (\Exception $e) {
             return '';
+        }
+    }
+
+    protected function getTotalRecords(Crawler $crawler) : int
+    {
+        try{
+            return $crawler->filter('.searched-companies > .panel')->count();
+        }
+        catch (\Exception $e){
+            return 0;
         }
     }
 

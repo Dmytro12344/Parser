@@ -7,7 +7,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
@@ -20,7 +19,7 @@ class ObchodnirejstrikfiremParserCommand extends Command
      */
     protected function configure() : void
     {
-        $this->setName('start-2')
+        $this->setName('cz:start-2')
             ->setDescription('Starts download from www.obchodnirejstrikfirem.cz')
             ->setHelp('This command allow you start the script');
     }
@@ -33,13 +32,15 @@ class ObchodnirejstrikfiremParserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
         $guzzle = new GuzzleWrap();
-        $links = file('web/Commands/CZ/Obchodnirejstrikfirem/list.txt', FILE_SKIP_EMPTY_LINES);
+        $categories = file('web/Commands/CZ/Obchodnirejstrikfirem/list.txt', FILE_SKIP_EMPTY_LINES);
 
-        foreach($links as $key => $link){
-            $crawlerHelper = new Crawler($guzzle->getContent(trim($link).'1/'));
+        foreach($categories as $key => $category){
 
-            for($i = 1; $i<= $this->getTotalPages($crawlerHelper); $i++) {
-                $crawler = new Crawler($guzzle->getContent(trim($link) . $i . '/'));
+            $link = $this->convertLink(trim($category));
+            $crawlerHelper = new Crawler($guzzle->getContent($link));
+
+            for($i = 1; $i <= $this->getTotalPages($crawlerHelper); $i++) {
+                $crawler = new Crawler($guzzle->getContent($this->convertLink(trim($category), $i)));
                 $pool = new Pool($guzzle->Client(), $this->getProfileLink($crawler, $this->getTotalRecords($crawler)), [
                     'concurrency' => 5,
                     'fulfilled' =>
@@ -68,17 +69,17 @@ class ObchodnirejstrikfiremParserCommand extends Command
                 $promise = $pool->promise();
                 $promise->wait();
             }
-
-
-
-
         }
     }
 
 
     protected function getCompanyName(Crawler $crawler) : string
     {
-        return $crawler->filter('#stred2 > h1')->text();
+        try{
+            return $crawler->filter('#stred2 > h1')->text();
+        } catch (\Exception $e){
+            return '';
+        }
     }
 
     /**
@@ -89,16 +90,19 @@ class ObchodnirejstrikfiremParserCommand extends Command
      */
     public function getPhone(Crawler $crawler) : string
     {
-        $filter =  $crawler->filterXPath("//td[@style='text-align:justify;padding:10px 0 10px 0']")->eq(0)->text();
-        $number = explode(':', $filter);
+        try {
+            $filter = $crawler->filterXPath("//td[@style='text-align:justify;padding:10px 0 10px 0']")->eq(0)->text();
+            $number = explode(':', $filter);
 
-        if(isset($number[1])){
-            $number[1] = str_replace('Fax', '',trim($number[1]));
-            $number[1] = str_replace('Tel2', '',trim($number[1]));
-            return $number[1];
+            if (isset($number[1])) {
+                $number[1] = str_replace('Fax', '', trim($number[1]));
+                $number[1] = str_replace('Tel2', '', trim($number[1]));
+                return $number[1];
+            }
+            return '';
+        } catch (\Exception $e) {
+            return '';
         }
-
-        return '';
     }
 
     /**
@@ -108,7 +112,11 @@ class ObchodnirejstrikfiremParserCommand extends Command
      */
     protected function getFullAddress(Crawler $crawler) : string
     {
-        return trim($crawler->filterXPath("//td[@style='text-align:justify;padding-top:10px']")->html());
+        try {
+            return trim($crawler->filterXPath("//td[@style='text-align:justify;padding-top:10px']")->html());
+        } catch (\Exception $e){
+            return '';
+        }
     }
 
     /**
@@ -119,12 +127,16 @@ class ObchodnirejstrikfiremParserCommand extends Command
      */
     protected function getAddress(Crawler $crawler) : string
     {
-        $fullAddress = explode('<br>', $this->getFullAddress($crawler));
-        if(isset($fullAddress[3])) {
-            $fullAddress[3] = str_replace(',', '', trim($fullAddress[3]));
-            return $fullAddress[3];
+        try {
+            $fullAddress = explode('<br>', $this->getFullAddress($crawler));
+            if (isset($fullAddress[3])) {
+                $fullAddress[3] = str_replace(',', '', trim($fullAddress[3]));
+                return $fullAddress[3];
+            }
+            return '';
+        } catch (\Exception $e){
+            return '';
         }
-        return '';
     }
 
     /**
@@ -135,13 +147,16 @@ class ObchodnirejstrikfiremParserCommand extends Command
      */
     protected function getPostal(Crawler $crawler) : string
     {
-        $fullAddress = explode('<br>', $this->getFullAddress($crawler));
-        if(isset($fullAddress[4])) {
-            $fullAddress[4] = str_replace(',', '', trim($fullAddress[4]));
-            return $fullAddress[4];
+        try {
+            $fullAddress = explode('<br>', $this->getFullAddress($crawler));
+            if (isset($fullAddress[4])) {
+                $fullAddress[4] = str_replace(',', '', trim($fullAddress[4]));
+                return $fullAddress[4];
+            }
+            return '';
+        } catch (\Exception $e){
+            return '';
         }
-
-        return '';
     }
 
     /**
@@ -150,7 +165,7 @@ class ObchodnirejstrikfiremParserCommand extends Command
      * @return string
      * Returns company City
      */
-    protected function getCity(Crawler $crawler)
+    protected function getCity(Crawler $crawler) : string
     {
         $fullAddress = explode('<br>', $this->getFullAddress($crawler));
         if(isset($fullAddress[2])) {
@@ -167,10 +182,14 @@ class ObchodnirejstrikfiremParserCommand extends Command
      */
     protected function getTotalPages(Crawler $crawler) : int
     {
-        $filter = $crawler->filter('.UnivBox3 + div')->text();
-        $filter = explode('/', trim($filter));
-        $totalPages = substr($filter[1], 0, -1);
-        return (int)$totalPages;
+        try {
+            $filter = $crawler->filter('.UnivBox3 + div')->text();
+            $filter = explode('/', trim($filter));
+            $totalPages = substr($filter[1], 0, -1);
+            return (int)$totalPages;
+        } catch (\Exception $e){
+            return 1;
+        }
     }
 
     /**
@@ -180,7 +199,11 @@ class ObchodnirejstrikfiremParserCommand extends Command
      */
     public function getTotalRecords(Crawler $crawler) : int
     {
-        return $crawler->filterXPath("//div[@style='margin-bottom:10px']")->count();
+        try{
+            return $crawler->filterXPath("//div[@style='margin-bottom:10px']")->count();
+        } catch (\Exception $e){
+            return 0;
+        }
     }
 
 
@@ -194,6 +217,12 @@ class ObchodnirejstrikfiremParserCommand extends Command
             $urn = $filter->filter('a')->attr('href');
             yield new Request('GET', $url . $urn);
         }
+    }
+
+    protected function convertLink(string $category, int $page=1) : string
+    {
+        $url = 'https://obchody.sluzby.cz/';
+        return urldecode("$url$category/$page");
     }
 
 

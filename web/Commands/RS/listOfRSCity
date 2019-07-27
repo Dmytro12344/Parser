@@ -1,0 +1,591 @@
+Ada
+Alibunar
+Despotovac
+Majanpek
+Sečanj
+Aleksandrovac
+Dimitrovgrad
+Mali Iđoš
+Senta
+Jasika
+Aleksinac
+Doljevac
+Mali Zvornik
+Sjenica
+Apatin
+Donji Milanovac
+Malo Crnište
+Smederevo
+Aranđelovac
+Medveđa
+Smederevska Palanka
+Arilje
+Žabalj
+Merošina
+Soko Banja
+Žabari
+Glogovac
+Kosovo Polje
+Lipljan
+Obilić
+Podujevo
+Priština-grad
+Štrpce
+Uroševac
+Štimlje
+Mionica
+Sombor
+Babušnica
+Žagubica
+Mladenovac
+Golubac
+Beograd-Barajevo
+Beograd-Čukarica
+Beograd-Grocka
+Beograd-Lazarevac
+Beograd-Mladenovac
+Beograd-Novi Beograd
+Beograd-Obrenovac
+Beograd-Palilula
+Beograd-Rakovica
+Beograd-Savski Venac
+Beograd-Sopot
+Beograd-Stari Grad
+Beograd-Surčin
+Beograd-Voždovac
+Beograd-Vračar
+Beograd-Zemun
+Beograd-Zvezdara
+Kosovska Mitrovica
+Pančevo-grad
+Sopot
+Bač
+Žitište
+Srbobran
+Bačka Palanka
+Žitorađa
+Negotin
+Sremska Mitrovica
+Bačka Topola
+Niš
+Sremski Karlovci
+Bački Petrovac
+Zaječar
+Nova Crnja
+Stara Pazova
+Bajina Bašta
+Zrenjanin
+Nova Varoš
+Subotica
+Barajevo
+Novi Bečej
+Surdulica
+Batočina
+Inđija
+Novi Beograd
+Svilajnac
+Bečej
+Irig
+Novi Kneževac
+Svrljig
+Bela Crkva
+Ivanjica
+Novi Pazar
+Bela Palanka
+Novi Sad
+Sevojno
+Temerin
+Beočin
+Jagodina
+Gornje
+Titel
+Beograd
+Obrenovac
+Majdanpek
+Crna Trava
+Topola
+Blace
+Lajkovac
+Kanjiža
+Odžaci
+Trgovište
+Bogatić
+Kikinda
+Opovo
+Malo Crniće
+Trstenik
+Bojnik
+Kladovo
+Osečina
+Boljevac
+Knić
+Ćićevac
+Bor
+Knjaževac
+Padina
+Ćuprija
+Bosilegrad
+Koceljeva
+Petrovaradin
+Palić
+Brus
+Kosjerić
+Gložane
+Pančevo
+Vrčin
+Ub
+Bujanovac
+Kostolac
+Borča
+Paraćin
+Užice
+Kovačica
+Pećinci
+Valjevo
+Kovin
+Pelagičevo
+Čačak
+Varvarin
+Kragujevac
+Petrovac na Mlavi
+Čajetina
+Velika Plana
+Kraljevo
+Pirot
+Čoka
+Veliko Gradište
+Krupanj
+Plandište
+Vladičin Han
+Kruševac
+Požarevac
+Šabac
+Vladimirci
+Kučevo
+Požega
+Šid
+Vlasotince
+Kula
+Preševo
+Vranje
+Kuršumlija
+Priboj
+Vrbas
+Prijepolje
+Vrnjačka banja
+Leskovac-grad
+Lazarevac
+Prokuplje
+Podunavci
+Vršac
+Lebane
+LA SRBIJE
+Leskovac
+Rača
+Gadžin Han
+Ljig
+Raška
+Golubovac
+Ljubovija
+Ražanj
+Gornji Milanovac
+Loznica
+Rekovac
+Grocka
+Lučani
+Rožaje
+Ruma
+ADA
+DESPOTOVAC
+MAJANPEK
+SEČANJ
+ALEKSANDROVAC
+DIMITROVGRAD
+MALI IĐOŠ
+SENTA
+ALEKSINAC
+DOLJEVAC
+MALI ZVORNIK
+SJENICA
+APATIN
+DONJI MILANOVAC
+MALO CRNIŠTE
+SMEDEREVO
+ARANĐELOVAC
+MEDVEĐA
+SMEDEREVSKA PALANKA
+ARILJE
+ŽABALJ
+MEROŠINA
+SOKO BANJA
+ŽABARI
+MIONICA
+SOMBOR
+BABUŠNICA
+ŽAGUBICA
+MLADENOVAC
+SOPOT
+BAČ
+ŽITIŠTE
+SRBOBRAN
+BAČKA PALANKA
+ŽITORAĐA
+NEGOTIN
+SREMSKA MITROVICA
+BAČKA TOPOLA
+NIŠ
+SREMSKI KARLOVCI
+BAČKI PETROVAC
+ZAJEČAR
+NOVA CRNJA
+STARA PAZOVA
+BAJINA BAŠTA
+ZRENJANIN
+NOVA VAROŠ
+SUBOTICA
+BARAJEVO
+NOVI BEČEJ
+SURDULICA
+BATOČINA
+INĐIJA
+NOVI BEOGRAD
+SVILAJNAC
+BEČEJ
+IRIG
+NOVI KNEŽEVAC
+SVRLJIG
+BELA CRKVA
+IVANJICA
+NOVI PAZAR
+BELA PALANKA
+NOVI SAD
+TEMERIN
+BEOČIN
+JAGODINA
+TITEL
+BEOGRAD
+OBRENOVAC
+TOPOLA
+BLACE
+KANJIŽA
+ODŽACI
+TRGOVIŠTE
+BOGATIĆ
+KIKINDA
+OPOVO
+TRSTENIK
+BOJNIK
+KLADOVO
+OSEČINA
+BOLJEVAC
+KNIĆ
+ĆIĆEVAC
+BOR
+KNJAŽEVAC
+PADINA
+ĆUPRIJA
+BOSILEGRAD
+KOCELJEVA
+PALIĆ
+BRUS
+KOSJERIĆ
+PANČEVO
+Prekovce
+UB
+BUJANOVAC
+KOSTOLAC
+PARAĆIN
+UŽICE
+KOVAČICA
+PEĆINCI
+VALJEVO
+KOVIN
+PELAGIČEVO
+ČAČAK
+VARVARIN
+KRAGUJEVAC
+PETROVAC NA MLAVI
+ČAJETINA
+VELIKA PLANA
+KRALJEVO
+PIROT
+ČOKA
+VELIKO GRADIŠTE
+KRUPANJ
+PLANDIŠTE
+VLADIČIN HAN
+KRUŠEVAC
+POŽAREVAC
+ŠABAC
+VLADIMIRCI
+KUČEVO
+POŽEGA
+ŠID
+VLASOTINCE
+KULA
+PREŠEVO
+VRANJE
+KURŠUMLIJA
+PRIBOJ
+VRBAS
+PRIJEPOLJE
+VRNJAČKA BANJA
+LAZAREVAC
+PROKUPLJE
+PODUNAVCI
+VRŠAC
+LEBANE
+LA SRBIJE
+LESKOVAC
+RAČA
+GADŽIN HAN
+LJIG
+RAŠKA
+GOLUBOVAC
+LJUBOVIJA
+RAŽANJ
+GORNJI MILANOVAC
+LOZNICA
+REKOVAC
+GROCKA
+LUČANI
+ROŽAJE
+RUMA
+Ада
+Александровац
+Алексинац
+Алексиначки Рудник
+Алибунар
+Апатин
+Аранђеловац
+Ариље
+Лазаревац
+Лајковац
+Лапово
+Лебане
+Лесковац
+Лозница
+Лучани
+Љиг
+Мајданпек
+Мали Зворник
+Матарушка Бања
+Мачванска Митровица
+Медвеђа
+Мионица
+Младеновац
+Мол
+Неготин
+Ниш
+Нишка Бања
+Нова Варош
+Нови Бечеј
+Нови Кнежевац
+Нови Пазар
+Нови Сад
+Обреновац
+Овча
+Опово
+Остружница
+Оџаци
+Палић
+Панчево
+Параћин
+Петроварадин
+Петровац
+Пећ
+Пећани
+Пиносава
+Пирот
+Подујево
+Пожаревац
+Пожега
+Прибој
+Пријепоље
+Приштина
+Призрен
+Прокупље
+Раља
+Рача
+Рашка
+Ресавица
+Рибница
+Рудовци
+Рума
+Руцка
+Свилајнац
+Сврљиг
+Севојно
+Сента
+Сијаринска Бања
+Сјеница
+Смедерево
+Смедеревска Паланка
+Сокобања
+Сомбор
+Сопот
+Србобран
+Сремска Каменица
+Сремска Митровица
+Сремски Карловци
+Стара Пазова
+Старчево
+Суботица
+Сурдулица
+Сурчин
+Темерин
+Тител
+Топола
+Трстеник
+Тутин
+Ћићевац
+Ћуприја
+Уб
+Ужице
+Умка
+Уљма
+Футог
+Црвенка
+Чајетина
+Чачак
+Чока
+Челарево
+Шабац
+Шид
+Бања
+Витина
+Вучитрн
+Глоговац
+Гњилане
+Дечане
+Драгаш
+Ђаковица
+Звечан
+Исток
+Качаник
+Клина
+Косово Поље
+Косовска Каменица
+Косовска Митровица
+Лепосавић
+Лешак
+Липљан
+Обилић
+Ораховац
+Пећ
+Подујево
+Призрен
+Приштина
+Сува Река
+Урошевац
+Бајмок
+Батајница
+Бежанија
+Белошевац
+Бешка
+Бивоље
+Велики Белаћевац
+Велики Мокри Луг
+Ветерник
+Вишњица
+Војловица
+Врдник
+Доња Грабовица
+Горња Топоница
+Градац
+Грачаница
+Грљан
+Жарково
+Железник
+Звечка
+Јабука
+Јајинци
+Јањево
+Кличевац
+Клупци
+Кнежевац
+Коловрат
+Крњача
+Кумодраж
+Лазарица
+Лозничко Поље
+Љубић
+Мали Мокри Луг
+Мало Головоде
+Малошиште
+Медошевац
+Миријево
+Мужља
+Нова Пазова
+Пригревица
+Равна Река
+Ресник
+Рипањ
+Сивац
+Станово
+Теферич
+Трбушани
+Челарево
+Барајево
+Рипањ
+Болеч
+Винча
+Врчин
+Калуђерица
+Лештане
+Јаково
+Угриновци
+Барич
+Звечка
+Падинска Скела
+Сремчица
+Стара Моравица
+Бајмок
+Чантавир
+Меленци
+Ново Милошево
+Хоргош
+Мокрин
+Падина
+Банатско Ново Село
+Долово
+Јабука
+Омољица
+Кљајићево
+Бачко Градиште
+Бачко Петрово Село
+Ђурђево
+Чуруг
+Ветерник
+Каћ
+Кисач
+Ковиљ
+Руменка
+Бешка
+Лаћарак
+Нова Пазова
+Нови Бановци
+Стари Бановци
+Богатић
+Клупци
+Лозничко Поље
+Мајур
+Поцерски Причиновић
+Баточина
+Доња Врежина
+Велики Трновац
+Прешево
+Дамјане
+Бресје
+Доње Жабаре
+Јуник
+Витомирица
+Ајвалија
+Матичане
+Кориша
+Љубижда
+Душаново
+Жур
+Србица
+Штимље
+Мамуша

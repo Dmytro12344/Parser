@@ -3,13 +3,13 @@
 
 namespace Commands\CZ\Zivefirmy\asinc;
 
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
-use GuzzleHttp\Pool;
-use GuzzleHttp\Psr7\Request;
 
 class ZivefirmyParserCommand extends Command
 {
@@ -18,8 +18,8 @@ class ZivefirmyParserCommand extends Command
      */
     protected function configure() : void
     {
-        $this->setName('start-10')
-            ->setDescription('Starts download from www.zivefirmy.cz')
+        $this->setName('cz:start-11')
+            ->setDescription('Starts download from http://www.zivefirmy.rs')
             ->setHelp('This command allow you start the script');
     }
 
@@ -30,175 +30,72 @@ class ZivefirmyParserCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $guzzle = new GuzzleWrap();
-        $links = file('web/Commands/CZ/Zivefirmy/list.txt', FILE_SKIP_EMPTY_LINES);
+        $categories = file('web/Commands/CZ/Zivefirmy/list.txt', FILE_SKIP_EMPTY_LINES);
+        $activeProcess = [];
 
-        foreach($links as $key => $link){
-            $crawlerTest = new Crawler($guzzle->getContent(trim($link) . '1'));
+        foreach($categories as $key => $category){
+            $totalPage = $this->getTotalPages($this->convertLink(trim($category)));
 
-            for($i = 1; $i <= $this->getTotalPages($crawlerTest); $i++) {
-                var_dump($i);
+            for ($i = 1; $i <= $totalPage; $i++) {
                 try {
+                    $uri = $this->convertLink(trim($category), $i);
+                    $process = new Process("php application.php cz:main-11 --url='$uri'");
+                    $process->start();
 
-                    $crawler = new Crawler($guzzle->getContent(trim($link) . $i));
-                    $category = $this->getCategory($crawler);
+                    $activeProcess[] = $process;
 
-                    $pool = new Pool($guzzle->Client(), $this->getProfile(9999999, $crawler), [
-                        'concurrency' => 3,
-                        'fulfilled' => function ($response, $index) use (&$category) {
+                    var_dump("$key link is processed, now $i page is processed");
 
-                            $crawlerHelper = new Crawler($response->getBody()->getContents());
+                    /** Cleaning memory of useless processes */
+                    $this->processControl($activeProcess);
 
-                            $result = array_values([
-                                'category' => $category,
-                                'name' => trim($this->getCompanyName($crawlerHelper)),
-                                'street' => trim($this->getAddress($crawlerHelper)),
-                                'postal' => trim($this->getPostal($crawlerHelper)),
-                                'city' => trim($this->getCity($crawlerHelper)),
-                                'phone' => trim($this->getPhone($crawlerHelper)),
-                                'email' => trim($this->getEmail($crawlerHelper)),
-                                'site' => trim($this->getSite($crawlerHelper)),
-                            ]);
-
-                            var_dump($result);
-                            $this->writeToFile([$result]);
-                        },
-                        'rejected' => function ($reason, $index) {
-                            var_dump("$reason $index REJECTED");
-                        },
-                    ]);
-
-                    $promise = $pool->promise();
-                    $promise->wait();
-
+                } catch (\Exception $e) {
+                    echo "\n\n\n\n\n\t\t\t" . $e->getMessage();
                 }
-                catch (\Exception $e){
-                    continue;
-                }
-
             }
         }
-
-    }
-
-    protected function getCategory(Crawler $crawler) : string
-    {
-        $filter = $crawler->filter('.content-main > h1')->html();
-        $category = explode('<span ', $filter);
-        return trim($category[0]);
-    }
-
-    protected function getCompanyName(Crawler $crawler) : string
-    {
-        if($crawler->filterXPath("//span[@itemprop='name']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='name']")->text();
-        }
-        return '';
-    }
-
-    public function getPhone(Crawler $crawler) : string
-    {
-        if($crawler->filterXPath("//span[@itemprop='telephone']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='telephone']")->text();
-        }
-
-        if($crawler->filterXPath("//span[@itemprop='telephone']")->filter('font > font')->count())
-
-        return '';
-    }
-
-    protected function getEmail(Crawler $crawler) : string
-    {
-        if($crawler->filterXPath("//a[@itemprop='email']")->count() > 0){
-            return $crawler->filterXPath("//a[@itemprop='email']")->text();
-        }
-        return '';
-    }
-
-    protected function getSite(Crawler $crawler) : string
-    {
-        if($crawler->filterXPath("//span[@class='title']")->count() > 0){
-            return $crawler->filterXPath("//span[@class='title']")->text();
-        }
-        return '';
-    }
-
-
-    protected function getAddress(Crawler $crawler) : string
-    {
-        if($crawler->filterXPath("//span[@itemprop='streetAddress']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='streetAddress']")->text();
-        }
-        return '';
-    }
-
-    protected function getPostal(Crawler $crawler) : string
-    {
-        if($crawler->filterXPath("//span[@itemprop='postalCode']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='postalCode']")->text();
-        }
-        return '';
-    }
-
-    protected function getCity(Crawler $crawler) : string
-    {
-        if($crawler->filterXPath("//span[@itemprop='addressLocality']")->count() > 0){
-            return $crawler->filterXPath("//span[@itemprop='addressLocality']")->text();
-        }
-        return '';
     }
 
     /**
-     * @param Crawler $crawler
+     * @param $processes
+     * Method that cleans memory from useless processes
+     */
+    public function processControl($processes) : void
+    {
+        if(count($processes) >= 20){
+            while(count($processes) >= 20){
+                foreach($processes as $key => $runningProcess){
+                    if(!$runningProcess->isRunning()){
+                        unset($processes[$key]);
+                    }
+                }
+                sleep(1);
+            }
+        }
+    }
+
+    /**
+     * @param $link
      * @return int
-     * Returns total pages from site
+     * Returns total pages from category
      */
-    protected function getTotalPages(Crawler $crawler) : int
+    public function getTotalPages(string $link) : int
     {
-        $filter =  $crawler->filterXPath("//ul[@class='pagination']")->children()->count();
-        $totalPages = $crawler->filter('.pagination > li')->eq($filter -2)->text();
-        return (int)$totalPages;
-    }
+        $guzzle = new GuzzleWrap();
 
-    /**
-     * @param Crawler $crawler
-     * @return int
-     * Returns total records from page
-     */
-    public function getTotalRecords(Crawler $crawler) : int
-    {
-        return $crawler->filter('#containerIAS > .company-item')->count();
-    }
-
-    protected function getProfileLink(Crawler $crawler, int $k) : string
-    {
-        $filter = $crawler->filter('.block')->eq($k);
-        return trim($filter->filter( '.title > a')->eq(0)->attr('href'));
-    }
-
-    public function getProfile(int $total, Crawler $crawler) : \Generator
-    {
-        $url = 'https://www.zivefirmy.cz';
-
-        for ($k = 0; $k < $total; $k++) {
-            $uri = $url . $this->getProfileLink($crawler, $k);
-            yield new Request('GET', $uri);
+        try {
+            $crawler = new Crawler($guzzle->getContent($link));
+            $filter = $crawler->filterXPath("//ul[@class='pagination']")->children()->count();
+            $totalPages = $crawler->filter('.pagination > li')->eq($filter - 2)->text();
+            return (int)$totalPages;
+        }
+        catch (\Exception $e){
+            return 1;
         }
     }
 
-
-    /**
-     * @param array $arr
-     * Writes to file
-     */
-    public function writeToFile(array $arr) : void
+    protected function convertLink(string $category, int $page=1) : string
     {
-        $stream = fopen('parsed5.csv', 'a');
-        foreach($arr as $item) {
-            fputcsv($stream, $item, '|');
-        }
-        fclose($stream);
+        return urldecode("https://www.zivefirmy.cz/?q=$category&pg=$page");
     }
-
-
 }
