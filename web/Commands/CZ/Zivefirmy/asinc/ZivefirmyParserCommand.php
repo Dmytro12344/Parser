@@ -94,6 +94,11 @@ class ZivefirmyParserCommand extends Command
         }
     }
 
+    /**
+     * @param string $category
+     * @param int $page
+     * @return string
+     */
     protected function convertLink(string $category, int $page=1) : string
     {
         return urldecode("https://www.zivefirmy.cz/?q=$category&pg=$page");

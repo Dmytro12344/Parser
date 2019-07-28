@@ -23,7 +23,6 @@ class RejstrikParserCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $categories = file('web/Commands/CZ/Rejstrik/async/list.txt', FILE_SKIP_EMPTY_LINES);
         $activeProcess = [];
 

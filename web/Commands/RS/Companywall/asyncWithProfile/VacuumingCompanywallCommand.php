@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Commands\RS\Companywall\asyncWithProfile;
-
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

@@ -96,14 +96,15 @@ class PrivredniParserCommand extends Command
     {
         $guzzle = new GuzzleWrap();
         $crawler = new Crawler($guzzle->getContent(urldecode($url)));
-            try {
+
+        try {
 
             $count = $crawler->filter('.mb30 > .pagination')->eq(3)->children()->count();
             return (int)$crawler->filter('.pagination')->eq(3)->filter('li')->eq($count - 2)->text();
 
         } catch(\Exception $e){
-                return 1;
-            }
+            return 1;
+        }
     }
 
 

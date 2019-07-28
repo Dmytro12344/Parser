@@ -52,6 +52,11 @@ class RejstrikVacuumingCommand extends Command
         }
     }
 
+    /**
+     * @param Crawler $crawler
+     * @return string
+     * Returns needed Category
+     */
     protected function getCategory(Crawler $crawler) : string
     {
         try{
