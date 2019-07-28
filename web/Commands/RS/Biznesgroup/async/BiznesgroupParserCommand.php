@@ -13,8 +13,6 @@ use Wraps\GuzzleWrap;
 
 class BiznesgroupParserCommand extends Command
 {
-
-
     /**
      * Command config
      */

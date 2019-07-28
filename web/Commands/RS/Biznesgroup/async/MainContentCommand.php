@@ -53,7 +53,7 @@ class MainContentCommand extends Command
      * @param $crawler
      * Method that cleans memory from useless processes
      */
-    protected function processControl($process, $crawler) : void
+    protected function processControl($process) : void
     {
         if (count($process) >= 1) {
             while (count($process) >= 1) {
@@ -83,4 +83,21 @@ class MainContentCommand extends Command
         }
         return $url;
     }
+
+    /**
+     * @param Crawler $crawler
+     * @param int $k
+     * @return int
+     * Return total records from page
+     */
+    protected function getTotalRecords(Crawler $crawler, int $k) : int
+    {
+        try{
+            //'THIS PLACE FOR UR LOGIC';
+            return 0;
+        } catch (\Exception $e){
+            return 0;
+        }
+    }
+
 }
