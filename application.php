@@ -43,6 +43,9 @@ $application->add(new  Commands\CZ\Sluzby\asyncWithProfile\VacuumingProfileComma
 
 /** https://www.najisto.cz */
 $application->add(new Commands\CZ\Najisto\NajistoPatserCommand());
+$application->add(new  Commands\CZ\Najisto\parsByCategories\NajistoParserCommand());
+$application->add(new  Commands\CZ\Najisto\parsByCategories\VacuumingNajistoCommand());
+
 
 /** https://www.zivefirmy.cz */
 $application->add(new Commands\CZ\Zivefirmy\asinc\ZivefirmyParserCommand());
