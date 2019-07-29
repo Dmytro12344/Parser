@@ -11,13 +11,8 @@ $application = new Application();
 /** System Commands */
 $application->add(new Commands\Core\CreateParserCommand());
 
-
-
-
-
 $application->add(new Commands\CreateStartCommand());
 $application->add(new Commands\VacuumingCommand());
-
 
 $application->add(new Commands\TwoSteps\StartProcessCommand());
 $application->add(new Commands\TwoSteps\MainContentCommand());
@@ -41,8 +36,7 @@ $application->add(new  Commands\CZ\Sluzby\asyncWithProfile\SluzbyParserCommand()
 $application->add(new  Commands\CZ\Sluzby\asyncWithProfile\MainContentCommand());
 $application->add(new  Commands\CZ\Sluzby\asyncWithProfile\VacuumingProfileCommand());
 
-/** https://www.najisto.cz */
-$application->add(new Commands\CZ\Najisto\NajistoPatserCommand());
+/** http://www.najisto.centrum.com */
 $application->add(new  Commands\CZ\Najisto\parsByCategories\NajistoParserCommand());
 $application->add(new  Commands\CZ\Najisto\parsByCategories\VacuumingNajistoCommand());
 
@@ -60,7 +54,8 @@ $application->add(new Commands\CZ\Csfirmy\asinc\CsfirmyParserCommand());
 $application->add(new Commands\CZ\Csfirmy\notAsinc\CsfirmyParserCommand());
 
 /** http://www.infoaktualne.cz */
-$application->add(new Commands\CZ\Infoaktualne\notAsync\InfoaktualneParserCommand());
+$application->add(new  Commands\CZ\Infoaktualne\parsByCategories\InfoaktualneParserCommand());
+$application->add(new  Commands\CZ\Infoaktualne\parsByCategories\VacuumingInfoaktualneCommand());
 
 /** https://www.podnikatel.cz */
 $application->add(new Commands\CZ\Podnikatel\async\PodnikatelParserCommand());

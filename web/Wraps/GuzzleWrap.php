@@ -23,7 +23,7 @@ class GuzzleWrap
         var_dump($proxyString);
 
         return new Client([
-            'timeout' => 10.0,
+            'timeout' => 5.0,
             'cookie' => false,
             'proxy' => $proxyString,
         ]);
@@ -50,7 +50,7 @@ class GuzzleWrap
     {
         $i = 0;
 
-        while($i != 20)
+        while($i != 12)
         {
             try
             {

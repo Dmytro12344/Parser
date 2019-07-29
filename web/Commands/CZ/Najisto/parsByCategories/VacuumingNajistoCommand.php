@@ -185,7 +185,7 @@ class VacuumingNajistoCommand extends Command
     */
     public function writeToFile(array $arr) : void
     {
-        $stream = fopen('parsed2.csv', 'a');
+        $stream = fopen('parsed4.csv', 'a');
         foreach($arr as $item) {
             fputcsv($stream, $item, '|');
         }
