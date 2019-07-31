@@ -111,9 +111,6 @@ class VacuumingProfileCommand extends Command
                 $filter = explode(' ', $filter);
                 return $filter[0];
             }
-
-            var_dump($filter);die;
-
             return '';
 
         } catch (\Exception $e) {
@@ -123,7 +120,7 @@ class VacuumingProfileCommand extends Command
 
     public function writeToFile(string $str) : void
     {
-        $stream = fopen('parsed.csv', 'a');
+        $stream = fopen('parsed1.csv', 'a');
         fwrite($stream, $str);
         fclose($stream);
     }

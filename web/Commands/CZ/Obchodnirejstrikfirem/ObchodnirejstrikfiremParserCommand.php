@@ -232,7 +232,7 @@ class ObchodnirejstrikfiremParserCommand extends Command
      */
     public function writeToFile(array $arr) : void
     {
-        $stream = fopen('parsed.csv', 'a');
+        $stream = fopen('parsed6.csv', 'a');
         foreach($arr as $item) {
             fputcsv($stream, $item, '|');
         }

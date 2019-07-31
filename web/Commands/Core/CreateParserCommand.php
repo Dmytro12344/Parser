@@ -77,7 +77,7 @@ class CreateParserCommand extends Command
         $helper = $this->getHelper('question');
         $questionCountry = new ChoiceQuestion(
             'Please, choice needed country of parser',
-            array('CZ', 'PL', 'RO')
+            array('CZ', 'PL', 'RO', 'IT', 'RS')
         );
         $questionCountry->setErrorMessage('Country %s is invalid.');
         $country = $helper->ask($input, $output, $questionCountry);

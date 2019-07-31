@@ -29,7 +29,6 @@ $application->add(new Commands\CZ\Zlatestranky\ZlatestrankyParserCommand());
 
 /** https://www.obchodnirejstrikfirem.cz */
 $application->add(new Commands\CZ\Obchodnirejstrikfirem\ObchodnirejstrikfiremParserCommand());
-$application->add(new Commands\CZ\Obchodnirejstrikfirem\ObchodnirejstrikfiremProfileCommand());
 
 /** https://obchody.sluzby.cz */
 $application->add(new  Commands\CZ\Sluzby\asyncWithProfile\SluzbyParserCommand());
@@ -84,7 +83,14 @@ $application->add(new Commands\RS\Biznesgroup\async\VacuumingProfileCommand());
 $application->add(new Commands\RS\Companywall\asyncWithProfile\CompanywallParserCommand());
 $application->add(new Commands\RS\Companywall\asyncWithProfile\VacuumingCompanywallCommand());
 
+/** https://www.moja-delatnost.rs */
+$application->add(new  Commands\RS\Moja\parsByLink\MojaParserCommand());
+$application->add(new  Commands\RS\Moja\parsByLink\VacuumingMojaCommand());
 
+/** https://mojabaza.com */
+$application->add(new  Commands\RS\Mojabaza\profileAndLinks\MojabazaParserCommand());
+$application->add(new  Commands\RS\Mojabaza\profileAndLinks\VacuumingMojabazaCommand());
+$application->add(new  Commands\RS\Mojabaza\profileAndLinks\ProfileLinksCommand());
 
 
 /** PL */
@@ -95,6 +101,11 @@ $application->add(new Commands\PL\Ptc\asyncWithProfile\MainContentCommand());
 $application->add(new Commands\PL\Ptc\asyncWithProfile\VacuumingProfileCommand());
 
 
+/** IT */
+
+/** https://www.paginegialle.it */
+$application->add(new  Commands\IT\Paginegialle\parsByLink\PaginegialleParserCommand());
+$application->add(new  Commands\IT\Paginegialle\parsByLink\VacuumingPaginegialleCommand());
 
 
 
