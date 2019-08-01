@@ -1,6 +1,6 @@
 <?php
 
-namespace Commands\RS\Mojabaza\profileAndLinks;
+namespace Commands\CZ\Tripadivisor\profileAndLinks;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,14 +10,14 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
 
-class MojabazaParserCommand extends Command
+class TripadivisorParserCommand extends Command
 {
     /**
      * Command config
     */
     protected function configure() : void
     {
-        $this->setName('rs:start-5')
+        $this->setName('cz:start-12')
             ->setDescription('Starts download from http://www.privredni-imenik.com')
             ->setHelp('This command allow you start the script');
     }
@@ -29,15 +29,12 @@ class MojabazaParserCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $links = file('web/Commands/RS/Mojabaza/profileAndLinks/list.txt', FILE_SKIP_EMPTY_LINES);
+        $links = file('web/Commands/CZ/Tripadivisor/profileAndLinks/list.txt', FILE_SKIP_EMPTY_LINES);
         $activeProcess = [];
         foreach($links as $key => $link){
             try{
-
-                for($i = 1; $i <= 9999; $i++){
-                    $uri = $this->convertLink(trim($link), $i);
-
-                    $process = new Process("php application.php rs:vacuuming-5 --url='$uri'");
+                for($i = 1; $i <= 2000; $i++){
+                    $process = new Process("php application.php cz:main-12 --url='$link'");
                     $process->start();
                     $activeProcess[] = $process;
                     var_dump("$key link is processed, now $i page is processed");
@@ -61,8 +58,8 @@ class MojabazaParserCommand extends Command
     */
     public function processControl(array $processes) : void
         {
-         if(count($processes) >= 1){
-            while(count($processes) >= 1){
+         if(count($processes) >= 6){
+            while(count($processes) >= 6){
                 foreach($processes as $key => $runningProcess){
                     if(!$runningProcess->isRunning()){
                         unset($processes[$key]);
@@ -70,28 +67,6 @@ class MojabazaParserCommand extends Command
                 }
                 sleep(1);
             }
-        }
-    }
-
-    /**
-     * @param string $link
-     * @param int $page
-     * @return string
-    */
-    protected function convertLink(string $link, int $page=1) : string
-    {
-        return urldecode($link . 'page/' . $page . '/');
-    }
-
-    protected function isActivePage(string $link) : bool
-    {
-        try{
-            $guzzle = new GuzzleWrap();
-            $crawler = new Crawler($guzzle->getContent($link));
-            $crawler->filter('.article-container')->text();
-            return true;
-        } catch (\Exception $e){
-            return false;
         }
     }
 }

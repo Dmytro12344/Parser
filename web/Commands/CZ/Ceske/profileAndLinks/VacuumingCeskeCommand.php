@@ -1,6 +1,6 @@
 <?php
 
-namespace Commands\RS\Mojabaza\profileAndLinks;
+namespace Commands\CZ\Ceske\profileAndLinks;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,15 +10,15 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
 
-class VacuumingMojabazaCommand extends Command
+class VacuumingCeskeCommand extends Command
 {
     /**
      * Command config
     */
     protected function configure() : void
     {
-        $this->setName('rs:vacuuming-5')
-            ->setDescription('Starts download from ')
+        $this->setName('cz:vacuuming-42')
+            ->setDescription('Starts download from http://www.privredni-imenik.com')
             ->setHelp('This command allow you start the script')
             ->addOption('url', 'u', InputOption::VALUE_REQUIRED, 'needed url for parsing');
     }
@@ -32,29 +32,21 @@ class VacuumingMojabazaCommand extends Command
     {
         $guzzle = new GuzzleWrap();
         $crawler = new Crawler($guzzle->getContent($input->getOption('url')));
-        $result =
-            trim($this->getCompanyName($crawler)) . '}##{' .
-            trim($this->getStreet($crawler)) . '}##{' .
-            trim($this->getCity($crawler)) . '}##{' .
-            trim($this->getPostal($crawler)) . '}##{' .
-            trim($this->getPhone($crawler)) . "\n";
+        $result = [
+            'category' => trim($this->getCategory($crawler)),
+            'name' => trim($this->getCompanyName($crawler)),
+            'address' => trim($this->getStreet($crawler)),
+            'postal' => trim($this->getPostal($crawler)),
+            'city' => trim($this->getCity($crawler)),
+            'phone' => trim($this->getPhone($crawler)),
+            'email' => trim($this->getEmail($crawler)),
+            'site' => trim($this->getSite($crawler)),
+        ];
+            var_dump($result);
+            if($result['name'] !== ''){
+                $this->writeToFile([$result]);
+            }
 
-        var_dump($result);
-
-        $this->writeToFile($result);
-    }
-
-    /**
-     * @param Crawler $crawler
-     * @return string
-    */
-    protected function getTotalRecords(Crawler $crawler) : string
-    {
-        try{
-            return 'PLACE FOR LOGICK';
-        }catch (\Exception $e){
-            return 0;
-        }
     }
 
     /**
@@ -64,7 +56,7 @@ class VacuumingMojabazaCommand extends Command
     protected function getCategory(Crawler $crawler) : string
     {
         try{
-            return 'PLACE FOR LOGICK';
+            return $crawler->filter('.area > .fac-detail-heading')->text();
         }catch (\Exception $e){
             return '';
         }
@@ -77,7 +69,7 @@ class VacuumingMojabazaCommand extends Command
     protected function getCompanyName(Crawler $crawler) : string
     {
         try{
-            return $crawler->filter('.entry-header > h1')->text();
+            return $crawler->filter('.fac-pivovar + h2')->text();
         }catch (\Exception $e){
             return '';
         }
@@ -90,9 +82,7 @@ class VacuumingMojabazaCommand extends Command
     protected function getStreet(Crawler $crawler) : string
     {
         try{
-            $filter = $crawler->filter('table > tr')->eq(0)->filter('td')->eq(1)->text();
-            $street = explode(',', $filter);
-            return $street[0];
+            return $crawler->filterXPath("//span[@itemprop='streetAddress']")->text();
         }catch (\Exception $e){
             return '';
         }
@@ -105,21 +95,7 @@ class VacuumingMojabazaCommand extends Command
     protected function getPostal(Crawler $crawler) : string
     {
         try{
-            $filter = $crawler->filter('table > tr')->eq(0)->filter('td')->eq(1)->text();
-            $city = explode(',', $filter);
-            if(strpos(trim($city[1]), ' ')){
-                $city = explode(' ', $city[1]);
-
-                if(is_numeric($city[1])){
-                    return $city[1];
-                }
-
-                if(is_numeric($city[0])){
-                    return $city[0];
-                }
-            }
-
-            return '';
+            return str_replace(' ', '', $crawler->filterXPath("//span[@itemprop='postalCode']")->text());
         }catch (\Exception $e){
             return '';
         }
@@ -132,7 +108,7 @@ class VacuumingMojabazaCommand extends Command
     protected function getCity(Crawler $crawler) : string
     {
         try{
-            return $crawler->filter('table > tr')->eq(1)->filter('td')->eq(1)->text();
+            return $crawler->filterXPath("//span[@itemprop='addressLocality']")->text();
         }catch (\Exception $e){
             return '';
         }
@@ -145,7 +121,13 @@ class VacuumingMojabazaCommand extends Command
     protected function getPhone(Crawler $crawler) : string
     {
         try{
-            return str_replace( ' ', '', $crawler->filter('table > tr')->eq(4)->filter('td')->eq(1)->text());
+            $phone = $crawler->filter('.fac-contact-phone')->filter('tr > td')->eq(1)->text();
+            $phone = str_replace([' ', '+', '/', '-', '_', ')', '('], '', $phone);
+            if(strpos($phone, ',')){
+                $phone = explode(',', $phone);
+                return $phone[0];
+            }
+            return $phone;
         }catch (\Exception $e){
             return '';
         }
@@ -158,7 +140,7 @@ class VacuumingMojabazaCommand extends Command
     protected function getEmail(Crawler $crawler) : string
     {
         try{
-            return 'PLACE FOR LOGICK';
+            return '';
         }catch (\Exception $e){
             return '';
         }
@@ -171,20 +153,22 @@ class VacuumingMojabazaCommand extends Command
     protected function getSite(Crawler $crawler) : string
     {
         try{
-            return 'PLACE FOR LOGICK';
+            return '';
         }catch (\Exception $e){
             return '';
         }
     }
 
     /**
-     * @param string $str
+     * @param array $arr
      * Writes to file
     */
-    public function writeToFile(string $str) : void
+    public function writeToFile(array $arr) : void
     {
-        $stream = fopen('parsed1.csv', 'a');
-        fwrite($stream, $str);
+        $stream = fopen('parsed6.csv', 'a');
+        foreach($arr as $item) {
+            fputcsv($stream, $item, '|');
+        }
         fclose($stream);
     }
 }

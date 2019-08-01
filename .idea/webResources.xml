@@ -12,6 +12,9 @@
             <path value="file://$PROJECT_DIR$/web/Commands/CZ/Zlatestranky" />
             <path value="file://$PROJECT_DIR$/web/Commands/CZ/Infoaktualne" />
             <path value="file://$PROJECT_DIR$/web/Commands/RS/Privredni" />
+            <path value="file://$PROJECT_DIR$/web/Commands/RS/Al" />
+            <path value="file://$PROJECT_DIR$/web/Commands/CZ/Ceske" />
+            <path value="file://$PROJECT_DIR$/web/Commands/CZ/Restu" />
           </resourceRoots>
         </entryData>
       </entry>

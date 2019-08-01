@@ -41,7 +41,7 @@ class ZlatestrankyParserCommand extends Command
 
                 $pool = new Pool($guzzle->Client(), $this->getContent($totalPage, trim($category)), [
                     'concurrency' => 7,
-                    'fulfilled' => function ($response, $index) {
+                    'fulfilled' => function ($response, $index) use ($key) {
 
                         $crawler = new Crawler($response->getBody()->getContents());
                         $totalRecords = $this->getTotalRecords($crawler);
@@ -59,7 +59,7 @@ class ZlatestrankyParserCommand extends Command
                                 'site' => trim($this->getSite($crawler, $i)),
                             ]);
 
-                            var_dump($result);
+                            var_dump($key + 1 . " category and $i page is processed");
                             $this->writeToFile([$result]);
                         }
                     },

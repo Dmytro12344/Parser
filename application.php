@@ -20,8 +20,6 @@ $application->add(new Commands\TwoSteps\ProfileProcessCommand());
 
 
 
-
-
 /** CZ */
 
 /** https://www.zlatestranky.cz */
@@ -45,8 +43,6 @@ $application->add(new Commands\CZ\Zivefirmy\asinc\ZivefirmyParserCommand());
 $application->add(new Commands\CZ\Zivefirmy\asinc\MainContentCommand());
 $application->add(new Commands\CZ\Zivefirmy\asinc\VacuumingProfileContent());
 
-$application->add(new Commands\CZ\Zivefirmy\notAsinc\ZivefirmyParserCommand());
-
 
 /** https://www.csfirmy.cz */
 $application->add(new Commands\CZ\Csfirmy\asinc\CsfirmyParserCommand());
@@ -63,6 +59,16 @@ $application->add(new Commands\CZ\Podnikatel\async\PodnikatelVacuumingCommand())
 /** https://rejstrik-firem.kurzy.cz */
 $application->add(new Commands\CZ\Rejstrik\async\RejstrikParserCommand());
 $application->add(new Commands\CZ\Rejstrik\async\RejstrikVacuumingCommand());
+
+/** http://www.ceske-hospudky.cz */
+$application->add(new  Commands\CZ\Ceske\profileAndLinks\CeskeParserCommand());
+$application->add(new  Commands\CZ\Ceske\profileAndLinks\VacuumingCeskeCommand());
+$application->add(new  Commands\CZ\Ceske\profileAndLinks\ProfileLinksCommand());
+
+/** https://www.restu.cz */
+$application->add(new  Commands\CZ\Restu\profileAndLinks\RestuParserCommand());
+$application->add(new  Commands\CZ\Restu\profileAndLinks\VacuumingRestuCommand());
+$application->add(new  Commands\CZ\Restu\profileAndLinks\ProfileLinksCommand());
 
 
 
@@ -91,6 +97,23 @@ $application->add(new  Commands\RS\Moja\parsByLink\VacuumingMojaCommand());
 $application->add(new  Commands\RS\Mojabaza\profileAndLinks\MojabazaParserCommand());
 $application->add(new  Commands\RS\Mojabaza\profileAndLinks\VacuumingMojabazaCommand());
 $application->add(new  Commands\RS\Mojabaza\profileAndLinks\ProfileLinksCommand());
+
+/** al */
+$application->add(new  Commands\RS\Al\parsByLink\AlParserCommand());
+$application->add(new  Commands\RS\Al\parsByLink\VacuumingAlCommand());
+
+
+/** http://www.Beogradnet.net */
+$application->add(new  Commands\RS\Beogradnet\profileAndLinks\BeogradnetParserCommand());
+$application->add(new  Commands\RS\Beogradnet\profileAndLinks\VacuumingBeogradnetCommand());
+$application->add(new  Commands\RS\Beogradnet\profileAndLinks\ProfileLinksCommand());
+
+/**  */
+$application->add(new  Commands\CZ\Tripadivisor\profileAndLinks\TripadivisorParserCommand());
+$application->add(new  Commands\CZ\Tripadivisor\profileAndLinks\VacuumingTripadivisorCommand());
+$application->add(new  Commands\CZ\Tripadivisor\profileAndLinks\ProfileLinksCommand());
+
+
 
 
 /** PL */

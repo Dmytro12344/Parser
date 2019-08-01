@@ -1,6 +1,6 @@
 <?php
 
-namespace Commands\RS\Mojabaza\profileAndLinks;
+namespace Commands\RS\Al\parsByLink;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,15 +10,15 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
 
-class VacuumingMojabazaCommand extends Command
+class VacuumingAlCommand extends Command
 {
     /**
      * Command config
     */
     protected function configure() : void
     {
-        $this->setName('rs:vacuuming-5')
-            ->setDescription('Starts download from ')
+        $this->setName('rs:vacuuming-6')
+            ->setDescription('Starts download from http://www.privredni-imenik.com')
             ->setHelp('This command allow you start the script')
             ->addOption('url', 'u', InputOption::VALUE_REQUIRED, 'needed url for parsing');
     }
@@ -32,26 +32,33 @@ class VacuumingMojabazaCommand extends Command
     {
         $guzzle = new GuzzleWrap();
         $crawler = new Crawler($guzzle->getContent($input->getOption('url')));
-        $result =
-            trim($this->getCompanyName($crawler)) . '}##{' .
-            trim($this->getStreet($crawler)) . '}##{' .
-            trim($this->getCity($crawler)) . '}##{' .
-            trim($this->getPostal($crawler)) . '}##{' .
-            trim($this->getPhone($crawler)) . "\n";
+        $totalRecords = $this->getTotalRecords($crawler);
 
-        var_dump($result);
+        for($k=0; $k < $totalRecords; $k++) {
+            $phone = trim($this->getPhone($crawler, $k));
 
-        $this->writeToFile($result);
+            if($phone !== '') {
+                $result =
+                    trim($this->getCompanyName($crawler, $k)) . '}##{' .
+                    trim($this->getStreet($crawler, $k)) . '}##{' .
+                    trim($this->getCity($crawler, $k)) . '}##{' .
+                    trim($this->getPostal($crawler, $k)) . '}##{' .
+                    $phone . "\n";
+
+                var_dump($result);
+                $this->writeToFile($result);
+            }
+        }
     }
 
     /**
      * @param Crawler $crawler
-     * @return string
+     * @return int
     */
-    protected function getTotalRecords(Crawler $crawler) : string
+    protected function getTotalRecords(Crawler $crawler) : int
     {
         try{
-            return 'PLACE FOR LOGICK';
+            return (int)$crawler->filter('.ui-widget-content > tr')->count();
         }catch (\Exception $e){
             return 0;
         }
@@ -59,9 +66,10 @@ class VacuumingMojabazaCommand extends Command
 
     /**
      * @param Crawler $crawler
+     * @param int $k
      * @return string
     */
-    protected function getCategory(Crawler $crawler) : string
+    protected function getCategory(Crawler $crawler, int $k) : string
     {
         try{
             return 'PLACE FOR LOGICK';
@@ -72,12 +80,13 @@ class VacuumingMojabazaCommand extends Command
 
     /**
      * @param Crawler $crawler
+     * @param int $k
      * @return string
     */
-    protected function getCompanyName(Crawler $crawler) : string
+    protected function getCompanyName(Crawler $crawler, int $k) : string
     {
         try{
-            return $crawler->filter('.entry-header > h1')->text();
+            return $crawler->filter('.ui-widget-content > tr')->eq($k)->filter('td')->eq(0)->text();
         }catch (\Exception $e){
             return '';
         }
@@ -85,41 +94,20 @@ class VacuumingMojabazaCommand extends Command
 
     /**
      * @param Crawler $crawler
+     * @param int $k
      * @return string
     */
-    protected function getStreet(Crawler $crawler) : string
+    protected function getStreet(Crawler $crawler, int $k) : string
     {
         try{
-            $filter = $crawler->filter('table > tr')->eq(0)->filter('td')->eq(1)->text();
-            $street = explode(',', $filter);
-            return $street[0];
-        }catch (\Exception $e){
-            return '';
-        }
-    }
+            $filter = $crawler->filter('.ui-widget-content > tr')->eq($k)->filter('td')->eq(8)->text();
 
-    /**
-     * @param Crawler $crawler
-     * @return string
-    */
-    protected function getPostal(Crawler $crawler) : string
-    {
-        try{
-            $filter = $crawler->filter('table > tr')->eq(0)->filter('td')->eq(1)->text();
-            $city = explode(',', $filter);
-            if(strpos(trim($city[1]), ' ')){
-                $city = explode(' ', $city[1]);
-
-                if(is_numeric($city[1])){
-                    return $city[1];
-                }
-
-                if(is_numeric($city[0])){
-                    return $city[0];
-                }
+            if(strpos($filter, ',')){
+                $filter = explode(',', $filter);
+                return $filter[0];
             }
+            return $filter;
 
-            return '';
         }catch (\Exception $e){
             return '';
         }
@@ -127,12 +115,13 @@ class VacuumingMojabazaCommand extends Command
 
     /**
      * @param Crawler $crawler
+     * @param int $k
      * @return string
     */
-    protected function getCity(Crawler $crawler) : string
+    protected function getPostal(Crawler $crawler, int $k) : string
     {
         try{
-            return $crawler->filter('table > tr')->eq(1)->filter('td')->eq(1)->text();
+            return $crawler->filter('.ui-widget-content > tr')->eq($k)->filter('td')->eq(10)->text();
         }catch (\Exception $e){
             return '';
         }
@@ -140,12 +129,13 @@ class VacuumingMojabazaCommand extends Command
 
     /**
      * @param Crawler $crawler
+     * @param int $k
      * @return string
     */
-    protected function getPhone(Crawler $crawler) : string
+    protected function getCity(Crawler $crawler, int $k) : string
     {
         try{
-            return str_replace( ' ', '', $crawler->filter('table > tr')->eq(4)->filter('td')->eq(1)->text());
+            return $crawler->filter('.ui-widget-content > tr')->eq($k)->filter('td')->eq(9)->text();
         }catch (\Exception $e){
             return '';
         }
@@ -153,9 +143,25 @@ class VacuumingMojabazaCommand extends Command
 
     /**
      * @param Crawler $crawler
+     * @param int $k
      * @return string
     */
-    protected function getEmail(Crawler $crawler) : string
+    protected function getPhone(Crawler $crawler, int $k) : string
+    {
+        try{
+            $filter = $crawler->filter('.ui-widget-content > tr')->eq($k)->filter('td')->eq(6)->text();
+            return str_replace([' ', '+', '/'], '', $filter);
+        }catch (\Exception $e){
+            return '';
+        }
+    }
+
+    /**
+     * @param Crawler $crawler
+     * @param int $k
+     * @return string
+    */
+    protected function getEmail(Crawler $crawler, int $k) : string
     {
         try{
             return 'PLACE FOR LOGICK';
@@ -166,9 +172,10 @@ class VacuumingMojabazaCommand extends Command
 
     /**
      * @param Crawler $crawler
+     * @param int $k
      * @return string
     */
-    protected function getSite(Crawler $crawler) : string
+    protected function getSite(Crawler $crawler, int $k) : string
     {
         try{
             return 'PLACE FOR LOGICK';
@@ -183,7 +190,7 @@ class VacuumingMojabazaCommand extends Command
     */
     public function writeToFile(string $str) : void
     {
-        $stream = fopen('parsed1.csv', 'a');
+        $stream = fopen('parsed5.csv', 'a');
         fwrite($stream, $str);
         fclose($stream);
     }

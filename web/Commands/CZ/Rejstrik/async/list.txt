@@ -1,27 +1,46 @@
-veterina
-veterinář
-veterinární
-veterináři
-veteriny
-zvířecí doktor
-zvířecí lékař
-veterinarian
-veterinary ambulance
-veterinary medicine
-veterinary clinic
-veterinární praxe
-veterinární chiropraxe
-MVDr.
-Veterinární lékař
-veterinární ordinace
-veterinární ambulance
-veterinární poradna
-veterinární služba
-veterinární pohotovost
-veterinární péče
-veterinární klinika
-veterinární lékařství
-veterinární lékař
-zvěrolékař
-veterinární léčba
-veterinární léčebna
+Restaurace
+restaurant
+Restaurační zařízení
+hostinec
+Hospoda
+Hospodské zařízení
+Hospůdka
+restaurant
+pizza
+pizzerie
+pizza shop
+pizzerka
+Steak house
+Crepérie
+samoobslužná restaurace
+stravovací zařízení
+penzion – restaurant
+jídelny
+jídelna
+dezerty
+dezertovna
+čokolády
+CUPCAKEKÁRNA
+zákusky
+kuchyně
+palačinkárna
+palačinkovna
+sushi
+shushi bar
+vegetarianská restaurace
+vegánská restaurace
+low carb restaurace
+čínská restaurace
+pohostinství
+vietnamská restaurace
+italská restaurace
+španělská restaurace
+rybí restaurace
+orientální restaurace
+arabská restaurace
+americká restaurace
+grill pub
+grill restaurant
+taverna
+krčma
+šenk
