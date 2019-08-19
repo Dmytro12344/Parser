@@ -77,7 +77,7 @@ class CreateParserCommand extends Command
         $helper = $this->getHelper('question');
         $questionCountry = new ChoiceQuestion(
             'Please, choice needed country of parser',
-            array('CZ', 'PL', 'RO', 'IT', 'RS')
+            array('CZ', 'PL', 'RO', 'IT', 'RS', 'GR')
         );
         $questionCountry->setErrorMessage('Country %s is invalid.');
         $country = $helper->ask($input, $output, $questionCountry);
@@ -186,7 +186,7 @@ class CreateParserCommand extends Command
         $file .= $this->writeHeaderExecuteMethod();
         $file .= $this->writeApplicationCommands($type, $country, $name);
         if($type === 'parsByCategories' || $type === 'profileAndCategories') {
-            $file .= self::DOUBLE_TAB . '$categories = file(\'web/Commands/'.$country . self::_DS .$name . self::_DS . $type . self::_DS . 'list.txt\', FILE_SKIP_EMPTY_LINES);' . PHP_EOL;
+            $file .= self::DOUBLE_TAB . '$categories = file(\'web/Commands/'.$country . self::_DS .$name . self::_DS . $type . self::_DS . 'listOfSity.txt\', FILE_SKIP_EMPTY_LINES);' . PHP_EOL;
             $file .= self::DOUBLE_TAB . '$activeProcess = [];' . PHP_EOL;
             $file .= self::DOUBLE_TAB . 'foreach($categories as $key => $category){' . PHP_EOL;
             $file .= self::TRIPLE_TAB . 'try{' . PHP_EOL;
@@ -194,7 +194,7 @@ class CreateParserCommand extends Command
             $file .= self::DD_TAB . 'for($i = 1; $i <= $totalPages; $i++){' . PHP_EOL;
             $file .= self::DD_TAB . self::SINGLE_TAB . '$uri = $this->convertLink(trim($category), $i);' . PHP_EOL;
         } else {
-            $file .= self::DOUBLE_TAB . '$links = file(\'web/Commands/'.$country . self::_DS .$name . self::_DS . $type . self::_DS . 'list.txt\', FILE_SKIP_EMPTY_LINES);' . PHP_EOL;
+            $file .= self::DOUBLE_TAB . '$links = file(\'web/Commands/'.$country . self::_DS .$name . self::_DS . $type . self::_DS . 'listOfSity.txt\', FILE_SKIP_EMPTY_LINES);' . PHP_EOL;
             $file .= self::DOUBLE_TAB . '$activeProcess = [];' . PHP_EOL;
             $file .= self::DOUBLE_TAB . 'foreach($links as $key => $link){' . PHP_EOL;
             $file .= self::TRIPLE_TAB . 'try{' . PHP_EOL;

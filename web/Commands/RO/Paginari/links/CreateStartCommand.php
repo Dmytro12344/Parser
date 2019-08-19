@@ -1,6 +1,6 @@
 <?php
 
-namespace Commands;
+namespace Commands\RO\Paginari\links;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,21 +30,18 @@ class CreateStartCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $links = file('list.txt', FILE_SKIP_EMPTY_LINES);
+        $links = file('web/Commands/RO/Paginari/links/list.txt', FILE_SKIP_EMPTY_LINES);
         $activeProcess = [];
 
         foreach($links as $key => $link) {
 
             $total_pages = $this->checkCountPages(trim($link));
-            for ($i = 1; $i <= $total_pages; $i++) {
+            for ($i = 1; $i < $total_pages; $i++) {
                 $url = urldecode($this->linkPars($link, $i));
                 try {
-                    $process = new Process("php application.php app:vacuuming -u '$url'");
+                    $process = new Process("php application.php ro:vacuuming-1 -u '$url'");
                     $process->start();
                     $activeProcess[] = $process;
-
-
-
                     var_dump("link #$key and $i page is processed");
 
                     /** Cleaning memory of useless processes */
@@ -53,7 +50,6 @@ class CreateStartCommand extends Command
                     if(($key === count($links) -1) && ($i === $total_pages)){
                         sleep(60);
                     }
-
                 } catch (ProcessFailedException $e) {
 
                 }

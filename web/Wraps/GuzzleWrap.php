@@ -17,8 +17,8 @@ class GuzzleWrap
     public function Client() : Client
     {
         $proxy = file('proxy.csv');
-        $rand = mt_rand(1, 247);
-        $proxyString = 'http://marekroziecki:pLnWYmR3@' . trim($proxy[$rand]) . ':60099';
+        $rand = mt_rand(1, 460);
+        $proxyString = 'http://marekroziecki:c9b605d0@' . trim($proxy[$rand]) . ':60099';
 
         var_dump($proxyString);
 

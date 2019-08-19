@@ -11,12 +11,8 @@ $application = new Application();
 /** System Commands */
 $application->add(new Commands\Core\CreateParserCommand());
 
-$application->add(new Commands\CreateStartCommand());
-$application->add(new Commands\VacuumingCommand());
-
-$application->add(new Commands\TwoSteps\StartProcessCommand());
-$application->add(new Commands\TwoSteps\MainContentCommand());
-$application->add(new Commands\TwoSteps\ProfileProcessCommand());
+$application->add(new Commands\RO\Paginari\links\CreateStartCommand());
+$application->add(new Commands\RO\Paginari\links\VacuumingCommand());
 
 
 
@@ -34,8 +30,9 @@ $application->add(new  Commands\CZ\Sluzby\asyncWithProfile\MainContentCommand())
 $application->add(new  Commands\CZ\Sluzby\asyncWithProfile\VacuumingProfileCommand());
 
 /** http://www.najisto.centrum.com */
-$application->add(new  Commands\CZ\Najisto\parsByCategories\NajistoParserCommand());
-$application->add(new  Commands\CZ\Najisto\parsByCategories\VacuumingNajistoCommand());
+$application->add(new  Commands\CZ\Najisto\profileAndCategories\NajistoParserCommand());
+$application->add(new  Commands\CZ\Najisto\profileAndCategories\VacuumingNajistoCommand());
+$application->add(new  Commands\CZ\Najisto\profileAndCategories\ProfileLinksCommand());
 
 
 /** https://www.zivefirmy.cz */
@@ -123,12 +120,24 @@ $application->add(new Commands\PL\Ptc\asyncWithProfile\PktParserCommand());
 $application->add(new Commands\PL\Ptc\asyncWithProfile\MainContentCommand());
 $application->add(new Commands\PL\Ptc\asyncWithProfile\VacuumingProfileCommand());
 
+/** https://panoramafirm.pl */
+$application->add(new  Commands\PL\Panorama\profileAndCategories\PanoramaParserCommand());
+$application->add(new  Commands\PL\Panorama\profileAndCategories\VacuumingPanoramaCommand());
+$application->add(new  Commands\PL\Panorama\profileAndCategories\ProfileLinksCommand());
+
 
 /** IT */
 
 /** https://www.paginegialle.it */
 $application->add(new  Commands\IT\Paginegialle\parsByLink\PaginegialleParserCommand());
 $application->add(new  Commands\IT\Paginegialle\parsByLink\VacuumingPaginegialleCommand());
+
+
+/** GR */
+
+/** https://www.vrisko.gr */
+$application->add(new  Commands\GR\Vrisko\parsByCategories\VriskoParserCommand());
+$application->add(new  Commands\GR\Vrisko\parsByCategories\VacuumingVriskoCommand());
 
 
 
