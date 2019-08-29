@@ -120,6 +120,16 @@ $application->add(new  Commands\RS\Imenik\profileAndLinks\ImenikParserCommand())
 $application->add(new  Commands\RS\Imenik\profileAndLinks\VacuumingImenikCommand());
 $application->add(new  Commands\RS\Imenik\profileAndLinks\ProfileLinksCommand());
 
+/** https://www.011info.com/ */
+$application->add(new  Commands\RS\Info011\profileAndLinks\Info011ParserCommand());
+$application->add(new  Commands\RS\Info011\profileAndLinks\VacuumingInfo011Command());
+$application->add(new  Commands\RS\Info011\profileAndLinks\ProfileLinksCommand());
+
+/** https://www.navidiku.rs */
+$application->add(new  Commands\RS\Navidiku\profileAndLinks\NavidikuParserCommand());
+$application->add(new  Commands\RS\Navidiku\profileAndLinks\VacuumingNavidikuCommand());
+$application->add(new  Commands\RS\Navidiku\profileAndLinks\ProfileLinksCommand());
+
 
 
 
