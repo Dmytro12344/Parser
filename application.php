@@ -110,6 +110,16 @@ $application->add(new  Commands\CZ\Tripadivisor\profileAndLinks\TripadivisorPars
 $application->add(new  Commands\CZ\Tripadivisor\profileAndLinks\VacuumingTripadivisorCommand());
 $application->add(new  Commands\CZ\Tripadivisor\profileAndLinks\ProfileLinksCommand());
 
+/** http://www.poslovne-strane.co.rs */
+$application->add(new  Commands\RS\Poslovne\profileAndLinks\PoslovneParserCommand());
+$application->add(new  Commands\RS\Poslovne\profileAndLinks\VacuumingPoslovneCommand());
+$application->add(new  Commands\RS\Poslovne\profileAndLinks\ProfileLinksCommand());
+
+/** http://www.imenik.co */
+$application->add(new  Commands\RS\Imenik\profileAndLinks\ImenikParserCommand());
+$application->add(new  Commands\RS\Imenik\profileAndLinks\VacuumingImenikCommand());
+$application->add(new  Commands\RS\Imenik\profileAndLinks\ProfileLinksCommand());
+
 
 
 
