@@ -135,6 +135,11 @@ $application->add(new  Commands\RS\Poslovnivodic\profileAndLinks\PoslovnivodicPa
 $application->add(new  Commands\RS\Poslovnivodic\profileAndLinks\VacuumingPoslovnivodicCommand());
 $application->add(new  Commands\RS\Poslovnivodic\profileAndLinks\ProfileLinksCommand());
 
+/** http://www.poslovnisvet.com */
+$application->add(new  Commands\RS\Poslovniesvet\profileAndLinks\PoslovniesvetParserCommand());
+$application->add(new  Commands\RS\Poslovniesvet\profileAndLinks\VacuumingPoslovniesvetCommand());
+$application->add(new  Commands\RS\Poslovniesvet\profileAndLinks\ProfileLinksCommand());
+
 
 /** PL */
 
