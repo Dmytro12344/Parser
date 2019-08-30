@@ -130,7 +130,10 @@ $application->add(new  Commands\RS\Navidiku\profileAndLinks\NavidikuParserComman
 $application->add(new  Commands\RS\Navidiku\profileAndLinks\VacuumingNavidikuCommand());
 $application->add(new  Commands\RS\Navidiku\profileAndLinks\ProfileLinksCommand());
 
-
+/** https://www.poslovnivodic.com */
+$application->add(new  Commands\RS\Poslovnivodic\profileAndLinks\PoslovnivodicParserCommand());
+$application->add(new  Commands\RS\Poslovnivodic\profileAndLinks\VacuumingPoslovnivodicCommand());
+$application->add(new  Commands\RS\Poslovnivodic\profileAndLinks\ProfileLinksCommand());
 
 
 /** PL */

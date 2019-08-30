@@ -1,6 +1,6 @@
 <?php
 
-namespace Commands\RS\Navidiku\profileAndLinks;
+namespace Commands\RS\Poslovnivodic\profileAndLinks;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,14 +10,14 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use Wraps\GuzzleWrap;
 
-class VacuumingNavidikuCommand extends Command
+class VacuumingPoslovnivodicCommand extends Command
 {
     /**
      * Command config
     */
     protected function configure() : void
     {
-        $this->setName('rs:vacuuming-23')
+        $this->setName('rs:vacuuming-24')
             ->setDescription('Starts download from http://www.privredni-imenik.com')
             ->setHelp('This command allow you start the script')
             ->addOption('url', 'u', InputOption::VALUE_REQUIRED, 'needed url for parsing');
@@ -42,34 +42,6 @@ class VacuumingNavidikuCommand extends Command
 
         var_dump($result);
         $this->writeToFile($result);
-
-        /*for($i = 0; $i< $this->getTotalLinks($crawler); $i++){
-            $result = $this->getLinks($crawler, $i);
-            $this->writeToFile($result);
-        }*/
-    }
-
-    /**
-     * @param Crawler $crawler
-     * @param int $k
-     * @return string
-     *
-     * Collect links from pages
-     */
-    protected function getLinks(Crawler $crawler, int $k) : string
-    {
-        return 'https://www.navidiku.rs/firme/' . $crawler->filter('.no-style > li')->eq($k)->filter('a')->attr('href') . PHP_EOL;
-    }
-
-    /**
-     * @param Crawler $crawler
-     * @return int
-     *
-     * Return total links from page
-     */
-    protected function getTotalLinks(Crawler $crawler) : int
-    {
-        return $crawler->filter('.no-style > li')->count();
     }
 
     /**
@@ -79,7 +51,7 @@ class VacuumingNavidikuCommand extends Command
     protected function getCompanyName(Crawler $crawler) : string
     {
         try{
-            return $crawler->filter('.header > h1 > a')->text();
+            return $crawler->filterXPath("//span[@itemprop='name']")->text();
         }catch (\Exception $e){
             return '';
         }
@@ -92,10 +64,8 @@ class VacuumingNavidikuCommand extends Command
     protected function getStreet(Crawler $crawler) : string
     {
         try{
-            $filter = $crawler->filter('.address > .no-style')->html();
-            $filter = explode('<li>Ulica: <b>', $filter);
-            $filter = explode('</b>', $filter[1]);
-
+            $filter = $crawler->filterXPath("//span[@itemprop='streetAddress']")->html();
+            $filter = explode('<br>', $filter);
             return $filter[0];
         }catch (\Exception $e){
             return '';
@@ -109,7 +79,7 @@ class VacuumingNavidikuCommand extends Command
     protected function getPostal(Crawler $crawler) : string
     {
         try{
-            return '';
+            return $crawler->filterXPath("//span[@itemprop='postalCode']")->text();
         }catch (\Exception $e){
             return '';
         }
@@ -122,11 +92,7 @@ class VacuumingNavidikuCommand extends Command
     protected function getCity(Crawler $crawler) : string
     {
         try{
-            $filter = $crawler->filter('.address > .no-style')->html();
-            $filter = explode('<li>Grad: <b>', $filter);
-            $filter = explode('</b>', $filter[1]);
-
-            return $filter[0];
+            return $crawler->filterXPath("//span[@itemprop='addressRegion']")->text();
         }catch (\Exception $e){
             return '';
         }
@@ -139,18 +105,8 @@ class VacuumingNavidikuCommand extends Command
     protected function getPhone(Crawler $crawler) : string
     {
         try{
-            $filter = $crawler->filter('.company-phone')->attr('data-tel');
-            if(strpos($filter, ';')){
-                $filter = explode(';', $filter);
-                return preg_replace('/[\D]/', '', $filter[0]);
-            }
-
-            if(strpos($filter, ',')){
-                $filter = explode(',', $filter);
-                return preg_replace('/[\D]/', '', $filter[0]);
-            }
-
-            return preg_replace('/[\D]/', '', $filter);
+            $filter = $crawler->filterXPath("//span[@itemprop='telephone']")->text();
+            return  preg_replace('/[\D]/', '', $filter);
         }catch (\Exception $e){
             return '';
         }
@@ -158,11 +114,12 @@ class VacuumingNavidikuCommand extends Command
 
     /**
      * @param string $str
+     *
      * Writes to file
      */
     public function writeToFile(string $str) : void
     {
-        $stream = fopen('parsed1.csv', 'a');
+        $stream = fopen('parsed.csv', 'a');
         fwrite($stream, $str);
         fclose($stream);
     }
