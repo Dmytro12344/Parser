@@ -135,10 +135,9 @@ $application->add(new  Commands\RS\Poslovnivodic\profileAndLinks\PoslovnivodicPa
 $application->add(new  Commands\RS\Poslovnivodic\profileAndLinks\VacuumingPoslovnivodicCommand());
 $application->add(new  Commands\RS\Poslovnivodic\profileAndLinks\ProfileLinksCommand());
 
-/** http://www.poslovnisvet.com */
-$application->add(new  Commands\RS\Poslovniesvet\profileAndLinks\PoslovniesvetParserCommand());
-$application->add(new  Commands\RS\Poslovniesvet\profileAndLinks\VacuumingPoslovniesvetCommand());
-$application->add(new  Commands\RS\Poslovniesvet\profileAndLinks\ProfileLinksCommand());
+/** https://www.firmesrbije.rs */
+$application->add(new  Commands\RS\Firmesrbije\parsByLink\FirmesrbijeParserCommand());
+$application->add(new  Commands\RS\Firmesrbije\parsByLink\VacuumingFirmesrbijeCommand());
 
 
 /** PL */
@@ -153,6 +152,10 @@ $application->add(new  Commands\PL\Panorama\profileAndCategories\PanoramaParserC
 $application->add(new  Commands\PL\Panorama\profileAndCategories\VacuumingPanoramaCommand());
 $application->add(new  Commands\PL\Panorama\profileAndCategories\ProfileLinksCommand());
 
+/** http://www.poslovniadresar.rs */
+$application->add(new  Commands\RS\Poslovniadresar\profileAndLinks\PoslovniadresarParserCommand());
+$application->add(new  Commands\RS\Poslovniadresar\profileAndLinks\VacuumingPoslovniadresarCommand());
+$application->add(new  Commands\RS\Poslovniadresar\profileAndLinks\ProfileLinksCommand());
 
 /** IT */
 
