@@ -139,6 +139,16 @@ $application->add(new  Commands\RS\Poslovnivodic\profileAndLinks\ProfileLinksCom
 $application->add(new  Commands\RS\Firmesrbije\parsByLink\FirmesrbijeParserCommand());
 $application->add(new  Commands\RS\Firmesrbije\parsByLink\VacuumingFirmesrbijeCommand());
 
+/** https://www.pttimenik.com */
+$application->add(new  Commands\RS\Pttimenik\parsByLink\PttimenikParserCommand());
+$application->add(new  Commands\RS\Pttimenik\parsByLink\VacuumingPttimenikCommand());
+
+/** https://poslovnikontakt.com */
+$application->add(new  Commands\RS\Poslovnikontakt\profileAndLinks\PoslovnikontaktParserCommand());
+$application->add(new  Commands\RS\Poslovnikontakt\profileAndLinks\VacuumingPoslovnikontaktCommand());
+$application->add(new  Commands\RS\Poslovnikontakt\profileAndLinks\ProfileLinksCommand());
+
+
 
 /** PL */
 
